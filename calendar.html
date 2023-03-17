@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- vue -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/v-calendar@2.4.1/lib/v-calendar.umd.min.js"></script>
+
+    <link rel="stylesheet" href="calendar.umd.css?_=1679044258526">
+    <script src="calendar.umd.js?_=1679044258526"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="px-2 pt-2">
+        <label>
+          locale
+          <select v-model="options.locale"><option v-for="v in lang">{{v}}</option></select>
+        </label>;
+        <label><input type="checkbox" v-model="options.allowChangeDate"> allowChangeDate</label>;
+        <label><input type="checkbox" v-model="options.allowChangeType"> allowChangeType</label>
+      </div>
+      <hr class="mt-0">
+      <calendar
+        :options.sync="options"
+        :resource.sync="resource"
+        :stock.sync="stock"
+        :items.sync="items">
+      </calendar>
+    </div>
+    
+    <script>
+      const $dayjs = window.dayjs
+      const defaultDate = $dayjs().format('YYYY-MM-DD')
+      const resource = mockResource()
+      const stock = mockStock()
+      const items = mockItems()
+
+      new Vue({
+        el: "#app",
+        components: {
+          calendar: window.calendar.calendar
+        },
+        data() {
+          return {
+            lang: ['tw', 'en', 'ja'],
+            options: {
+              locale: 'tw', // tw|en|ja
+              holiday: [],
+              headerTitle: '客房類別',
+              waitTitle: '待排房',
+              previewDay: 0,
+              view: {
+              // start,
+              // end,
+                count: 7
+              },
+              allowChangeDate: false,
+              allowChangeType: true
+            },
+            resource,
+            stock,
+            items
+          }
+        },
+        mounted() {
+        }
+      })
+    
+      function mockStock() {
+        const mockResource = [1, 2, 3, 4]
+        const mockCount = 30
+        const mockFull = [3, 6]
+        const mockOpen = [1, 3, 5, 6, 0]
+
+        const stock = {}
+        mockResource.map(c => {
+          if (!stock[c]) {
+            stock[c] = {}
+          }
+          let i = -5
+          while (i < mockCount) {
+            const date = $dayjs(defaultDate).add(i, 'days').format('YYYY-MM-DD')
+            const day = $dayjs(date).day()
+            const full = mockFull.includes(day) ? 1 : 0
+            const open = mockOpen.includes(day) ? 1 : 0
+            stock[c][date] = {
+              stock: 10,
+              open,
+              full
+            }
+            i++
+          }
+        })
+
+        return stock
+      }
+
+      function mockItems() {
+        return [
+            // A 待排房
+          ...[
+            {
+              id: 1549533,
+              order_group: 'OBE00001',
+              title: 'A1 待排房',
+              start: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              payment_status: 'unpaid',
+              room_type: 1,
+              room_number_id: null,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'on',
+              order_from: 'phone'
+            },
+            {
+              id: 1549534,
+              order_group: 'OBE00001',
+              title: 'A2 待排房',
+              start: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              payment_status: 'not_finish',
+              room_type: 1,
+              room_number_id: null,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkin',
+              order_from: 'phone'
+            }
+          ],
+          // B
+          ...[
+            {
+              id: 1549540,
+              order_group: 'OBE00012',
+              title: 'B1',
+              start: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_unpaid',
+              room_type: 1,
+              room_number_id: 12,
+              assign: true,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkin',
+              order_from: 'phone'
+            },
+            {
+              id: 1549541,
+              order_group: 'OBE00012',
+              title: 'B2',
+              start: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(3, 'days').format('YYYY-MM-DD'),
+              payment_status: 'paid',
+              room_type: 1,
+              room_number_id: 10,
+              assign: true,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkin',
+              order_from: 'phone'
+            },
+            {
+              id: 1549542,
+              order_group: 'OBE00012',
+              title: 'B3',
+              start: $dayjs(defaultDate).add(3, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(4, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_expire',
+              room_type: 1,
+              room_number_id: 12,
+              assign: true,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkin',
+              order_from: 'phone'
+            }
+          ],
+          // C
+          ...[
+            {
+              id: 1549550,
+              order_group: 'OBE00003',
+              title: 'C1',
+              start: $dayjs(defaultDate).add(3, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(4, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_expire',
+              room_type: 1,
+              room_number_id: 13,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkout',
+              order_from: 'phone'
+            },
+            {
+              id: 15495501,
+              order_group: 'OBE00003',
+              title: 'C2',
+              start: $dayjs(defaultDate).add(4, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(5, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_expire',
+              room_type: 1,
+              room_number_id: 13,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkout',
+              order_from: 'phone'
+            }
+          ],
+          // D
+          ...[
+            {
+              id: 1549560,
+              order_group: 'OBE00004',
+              title: 'D1',
+              start: $dayjs(defaultDate).add(3, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(4, 'days').format('YYYY-MM-DD'),
+              payment_status: 'unpaid',
+              room_type: 1,
+              room_number_id: 13,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'on',
+              order_from: 'phone'
+            },
+            {
+              id: 1549561,
+              order_group: 'OBE00004',
+              title: 'D2',
+              start: $dayjs(defaultDate).add(4, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(5, 'days').format('YYYY-MM-DD'),
+              payment_status: 'unpaid',
+              room_type: 1,
+              room_number_id: 13,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'on',
+              order_from: 'phone'
+            }
+          ],
+          // E
+          ...[
+            {
+              id: 1549538,
+              order_group: 'OBE00013',
+              title: 'E1',
+              start: $dayjs(defaultDate).format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_unpaid',
+              room_type: 1,
+              room_number_id: 11,
+              assign: true,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'on',
+              order_from: 'phone'
+            },
+            //
+            {
+              id: 1549539,
+              order_group: 'OBE00013',
+              title: 'E2',
+              start: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              payment_status: 'deposit_unpaid',
+              room_type: 1,
+              room_number_id: 11,
+              assign: true,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkin',
+              order_from: 'phone'
+            }
+          ],
+          // F
+          ...[
+            {
+              id: 15495401,
+              order_group: 'OBE00014',
+              title: 'F1',
+              start: $dayjs(defaultDate).add(-1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).format('YYYY-MM-DD'),
+              payment_status: 'deposit_unpaid',
+              room_type: 1,
+              room_number_id: 10,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkout',
+              order_from: 'phone'
+            },
+            {
+              id: 15495411,
+              order_group: 'OBE00014',
+              title: 'F2',
+              start: $dayjs(defaultDate).format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              payment_status: 'paid',
+              room_type: 1,
+              room_number_id: 10,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkout',
+              order_from: 'phone'
+            },
+            {
+              id: 15495412,
+              order_group: 'OBE00014',
+              title: 'F3',
+              start: $dayjs(defaultDate).add(1, 'days').format('YYYY-MM-DD'),
+              end: $dayjs(defaultDate).add(2, 'days').format('YYYY-MM-DD'),
+              payment_status: 'paid',
+              room_type: 1,
+              room_number_id: 10,
+              assign: false,
+              source: 'manual',
+              ota_source: '',
+              ota_order_id: null,
+              checked_status: 'checkout',
+              order_from: 'phone'
+            }
+          ]
+        ]
+      }
+    
+      function mockResource() {
+        return [
+          {
+            id: 1,
+            name: 'RoomType1',
+            children: [
+              { id: 10, name: 'room10' },
+              { id: 11, name: 'room11' },
+              { id: 12, name: 'room12' },
+              { id: 13, name: 'room13' },
+              { id: 14, name: 'room14' },
+              { id: 15, name: 'room15' }
+            ]
+          },
+          {
+            id: 2,
+            name: 'RoomType2',
+            children: [
+              { id: 20, name: 'room20' },
+              { id: 21, name: 'room21' },
+              { id: 22, name: 'room22' },
+              { id: 23, name: 'room23' },
+              { id: 24, name: 'room24' },
+              { id: 25, name: 'room25' }
+            ]
+          }
+        ]
+      }
+    </script>
+  </body>
+</html>
