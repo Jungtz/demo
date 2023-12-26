@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- vue -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"></script>
+    <!-- bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css">
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/v-calendar@2.4.1/lib/v-calendar.umd.min.js"></script>
+
+    <link rel="stylesheet" href="calendar.umd.css?_=1703571309267">
+    <script src="calendar.umd.js?_=1703571309267"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="px-2 pt-2">
+        <label>
+          locale
+          <select v-model="options.locale"><option v-for="v in lang">{{v}}</option></select>
+        </label>;
+        <label><input type="checkbox" v-model="options.allowChangeDate"> allowChangeDate</label>;
+        <label><input type="checkbox" v-model="options.allowChangeType"> allowChangeType</label>
+      </div>
+      <hr class="mt-0">
+      <calendar
+        :options.sync="options"
+        :resource.sync="resource"
+        :stock.sync="stock">
+        <template #slot-item-stock="{ scope }">
+          <sup class="pr-1"><i v-if="!scope.open" class="fa-solid fa-lock"></i></sup>
+          <span class="pr-1"><small>$</small>{{ scope.price }}</span><sub>/ {{ scope.stock }}</sub>
+        </template>
+      </calendar>
+    </div>
+    
+    <script>
+      const $dayjs = window.dayjs
+      const defaultDate = $dayjs().format('YYYY-MM-DD')
+      const resource = mockResource()
+      const stock = mockStock()
+
+      new Vue({
+        el: "#app",
+        components: {
+          calendar: window.calendar.calendar
+        },
+        data() {
+          return {
+            lang: ['tw', 'en', 'ja'],
+            options: {
+              locale: 'tw', // tw|en|ja
+              holiday: [],
+              headerTitle: '[本人] 商品名稱',
+              previewDay: 0,
+              view: {
+              // start,
+              // end,
+                count: 7
+              },
+              showWait: false,
+              showToolbar: false
+            },
+            resource,
+            stock
+          }
+        },
+        mounted() {
+        }
+      })
+    
+      function mockStock() {
+        const mockResource = [1, 2, 3, 4]
+        const mockCount = 30
+        const mockFull = []
+        const mockOpen = [1, 3, 5, 6, 0]
+
+        const stock = {}
+        mockResource.map(c => {
+          if (!stock[c]) {
+            stock[c] = {}
+          }
+          let i = -5
+          while (i < mockCount) {
+            const date = $dayjs(defaultDate).add(i, 'days').format('YYYY-MM-DD')
+            const day = $dayjs(date).day()
+            const full = mockFull.includes(day) ? 1 : 0
+            const open = mockOpen.includes(day) ? 1 : 0
+            stock[c][date] = {
+              price: getRandomIntI(1, 100) * 100,
+              stock: getRandomIntI(0, 10),
+              open,
+              full
+            }
+            i++
+          }
+        })
+
+        return stock
+      }
+    
+      function mockResource() {
+        return [
+        {
+          id: 1, // sku id
+          name: '[組合] 機＋酒',
+          extend: '#98'
+        },
+        {
+          id: 2,
+          name: '[組合] 機＋酒＋票',
+          extend: '#113'
+        },
+        {
+          id: 3,
+          name: '[組合] 機＋酒＋租車',
+          extend: '#129'
+        }
+        ]
+      }
+    
+      function getRandomIntI(min, max) {
+        min = Math.ceil(min)
+        max = Math.floor(max)
+        return Math.floor(Math.random() * (max - min + 1) + min) // The maximum is inclusive and the minimum is inclusive
+      }
+    </script>
+  </body>
+</html>

@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/v-calendar@2.4.1/lib/v-calendar.umd.min.js"></script>
 
-    <link rel="stylesheet" href="calendar.umd.css?_=1703555773316">
-    <script src="calendar.umd.js?_=1703555773316"></script>
+    <link rel="stylesheet" href="calendar.umd.css?_=1703571309267">
+    <script src="calendar.umd.js?_=1703571309267"></script>
   </head>
   <body>
     <div id="app">
@@ -95,7 +95,8 @@
             const full = mockFull.includes(day) ? 1 : 0
             const open = mockOpen.includes(day) ? 1 : 0
             stock[c][date] = {
-              stock: 10,
+              price: getRandomIntI(1, 100) * 100,
+              stock: getRandomIntI(0, 10),
               open,
               full
             }
@@ -381,6 +382,12 @@
             ]
           }
         ]
+      }
+
+      function getRandomIntI(min, max) {
+        min = Math.ceil(min)
+        max = Math.floor(max)
+        return Math.floor(Math.random() * (max - min + 1) + min) // The maximum is inclusive and the minimum is inclusive
       }
     </script>
   </body>
