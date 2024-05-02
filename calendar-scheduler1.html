@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/v-calendar@2.4.1/lib/v-calendar.umd.min.js"></script>
 
-    <link rel="stylesheet" href="calendar.umd.css?_=1714631949770">
-    <script src="calendar.umd.js?_=1714631949770"></script>
+    <link rel="stylesheet" href="calendar.umd.css?_=1714644940131">
+    <script src="calendar.umd.js?_=1714644940131"></script>
   </head>
   <body>
     <div id="app">
@@ -36,8 +36,18 @@
         :resource.sync="resource"
         :stock.sync="stock">
         <template #slot-item-stock="{ scope }">
-          <sup class="pr-1"><i v-if="!scope.open" class="fa-solid fa-lock"></i></sup>
-          <span class="pr-1"><small>$</small>{{ scope.price }}</span><sub>/ {{ scope.stock }}</sub>
+          <template v-if="Object.keys(scope).length">
+            <span class="pr-1">
+              <sup>
+                <small>{{ scope.currency }}</small>
+              </sup>
+              {{ scope.price | priceFormat }}
+            </span>
+            <sub>/ {{ scope.stock }}</sub>
+          </template>
+          <template v-else>
+            <small>N/A</small>
+          </template>
         </template>
       </calendar>
     </div>
@@ -52,6 +62,11 @@
         el: "#app",
         components: {
           calendar: window.calendar.calendar
+        },
+        filters: {
+          priceFormat(n, float = 2) {
+            return isNaN(+n) ? n : `${(+n).toFixed(float)}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+          }
         },
         data() {
           return {
@@ -95,6 +110,7 @@
             const full = mockFull.includes(day) ? 1 : 0
             const open = mockOpen.includes(day) ? 1 : 0
             stock[c][date] = {
+              currency: 'TWD',
               price: getRandomIntI(1, 100) * 100,
               stock: getRandomIntI(0, 10),
               open,
