@@ -17,8 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.7/dayjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/v-calendar@2.4.1/lib/v-calendar.umd.min.js"></script>
 
-    <link rel="stylesheet" href="calendar.umd.css?_=1714644940131">
-    <script src="calendar.umd.js?_=1714644940131"></script>
+    <link rel="stylesheet" href="calendar.umd.css?_=1725520140042">
+    <script src="calendar.umd.js?_=1725520140042"></script>
   </head>
   <body>
     <div id="app">
@@ -35,7 +35,8 @@
         :options.sync="options"
         :resource.sync="resource"
         :stock.sync="stock"
-        :items.sync="items">
+        :items.sync="items"
+        @click="itemClickHandler">
       </calendar>
     </div>
     
@@ -73,7 +74,13 @@
             items
           }
         },
-        mounted() {
+        mounted() {},
+        methods: {
+          itemClickHandler(value) {
+            const { date, room, num, e } = value
+            window.console.log('itemClickHandler', value)
+            alert(`itemClickHandler <pre>${JSON.stringify(value, null, 2)}</pre>`)
+          }
         }
       })
     
