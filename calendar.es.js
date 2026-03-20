@@ -1,0 +1,2145 @@
+var pt = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
+function Dt(e) {
+  return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
+}
+var kt = { exports: {} };
+(function(e, t) {
+  (function(s, n) {
+    e.exports = n();
+  })(pt, function() {
+    var s = 1e3, n = 6e4, a = 36e5, i = "millisecond", d = "second", o = "minute", m = "hour", y = "day", S = "week", k = "month", L = "quarter", g = "year", Y = "date", M = "Invalid Date", O = /^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/, B = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g, j = { name: "en", weekdays: "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), months: "January_February_March_April_May_June_July_August_September_October_November_December".split("_"), ordinal: function(w) {
+      var u = ["th", "st", "nd", "rd"], c = w % 100;
+      return "[" + w + (u[(c - 20) % 10] || u[c] || u[0]) + "]";
+    } }, W = function(w, u, c) {
+      var _ = String(w);
+      return !_ || _.length >= u ? w : "" + Array(u + 1 - _.length).join(c) + w;
+    }, Z = { s: W, z: function(w) {
+      var u = -w.utcOffset(), c = Math.abs(u), _ = Math.floor(c / 60), h = c % 60;
+      return (u <= 0 ? "+" : "-") + W(_, 2, "0") + ":" + W(h, 2, "0");
+    }, m: function w(u, c) {
+      if (u.date() < c.date()) return -w(c, u);
+      var _ = 12 * (c.year() - u.year()) + (c.month() - u.month()), h = u.clone().add(_, k), v = c - h < 0, b = u.clone().add(_ + (v ? -1 : 1), k);
+      return +(-(_ + (c - h) / (v ? h - b : b - h)) || 0);
+    }, a: function(w) {
+      return w < 0 ? Math.ceil(w) || 0 : Math.floor(w);
+    }, p: function(w) {
+      return { M: k, y: g, w: S, d: y, D: Y, h: m, m: o, s: d, ms: i, Q: L }[w] || String(w || "").toLowerCase().replace(/s$/, "");
+    }, u: function(w) {
+      return w === void 0;
+    } }, U = "en", J = {};
+    J[U] = j;
+    var et = "$isDayjsObject", N = function(w) {
+      return w instanceof ot || !(!w || !w[et]);
+    }, X = function w(u, c, _) {
+      var h;
+      if (!u) return U;
+      if (typeof u == "string") {
+        var v = u.toLowerCase();
+        J[v] && (h = v), c && (J[v] = c, h = v);
+        var b = u.split("-");
+        if (!h && b.length > 1) return w(b[0]);
+      } else {
+        var D = u.name;
+        J[D] = u, h = D;
+      }
+      return !_ && h && (U = h), h || !_ && U;
+    }, z = function(w, u) {
+      if (N(w)) return w.clone();
+      var c = typeof u == "object" ? u : {};
+      return c.date = w, c.args = arguments, new ot(c);
+    }, C = Z;
+    C.l = X, C.i = N, C.w = function(w, u) {
+      return z(w, { locale: u.$L, utc: u.$u, x: u.$x, $offset: u.$offset });
+    };
+    var ot = function() {
+      function w(c) {
+        this.$L = X(c.locale, null, !0), this.parse(c), this.$x = this.$x || c.x || {}, this[et] = !0;
+      }
+      var u = w.prototype;
+      return u.parse = function(c) {
+        this.$d = function(_) {
+          var h = _.date, v = _.utc;
+          if (h === null) return /* @__PURE__ */ new Date(NaN);
+          if (C.u(h)) return /* @__PURE__ */ new Date();
+          if (h instanceof Date) return new Date(h);
+          if (typeof h == "string" && !/Z$/i.test(h)) {
+            var b = h.match(O);
+            if (b) {
+              var D = b[2] - 1 || 0, T = (b[7] || "0").substring(0, 3);
+              return v ? new Date(Date.UTC(b[1], D, b[3] || 1, b[4] || 0, b[5] || 0, b[6] || 0, T)) : new Date(b[1], D, b[3] || 1, b[4] || 0, b[5] || 0, b[6] || 0, T);
+            }
+          }
+          return new Date(h);
+        }(c), this.init();
+      }, u.init = function() {
+        var c = this.$d;
+        this.$y = c.getFullYear(), this.$M = c.getMonth(), this.$D = c.getDate(), this.$W = c.getDay(), this.$H = c.getHours(), this.$m = c.getMinutes(), this.$s = c.getSeconds(), this.$ms = c.getMilliseconds();
+      }, u.$utils = function() {
+        return C;
+      }, u.isValid = function() {
+        return this.$d.toString() !== M;
+      }, u.isSame = function(c, _) {
+        var h = z(c);
+        return this.startOf(_) <= h && h <= this.endOf(_);
+      }, u.isAfter = function(c, _) {
+        return z(c) < this.startOf(_);
+      }, u.isBefore = function(c, _) {
+        return this.endOf(_) < z(c);
+      }, u.$g = function(c, _, h) {
+        return C.u(c) ? this[_] : this.set(h, c);
+      }, u.unix = function() {
+        return Math.floor(this.valueOf() / 1e3);
+      }, u.valueOf = function() {
+        return this.$d.getTime();
+      }, u.startOf = function(c, _) {
+        var h = this, v = !!C.u(_) || _, b = C.p(c), D = function(r, l) {
+          var p = C.w(h.$u ? Date.UTC(h.$y, l, r) : new Date(h.$y, l, r), h);
+          return v ? p : p.endOf(y);
+        }, T = function(r, l) {
+          return C.w(h.toDate()[r].apply(h.toDate("s"), (v ? [0, 0, 0, 0] : [23, 59, 59, 999]).slice(l)), h);
+        }, E = this.$W, x = this.$M, I = this.$D, nt = "set" + (this.$u ? "UTC" : "");
+        switch (b) {
+          case g:
+            return v ? D(1, 0) : D(31, 11);
+          case k:
+            return v ? D(1, x) : D(0, x + 1);
+          case S:
+            var Q = this.$locale().weekStart || 0, f = (E < Q ? E + 7 : E) - Q;
+            return D(v ? I - f : I + (6 - f), x);
+          case y:
+          case Y:
+            return T(nt + "Hours", 0);
+          case m:
+            return T(nt + "Minutes", 1);
+          case o:
+            return T(nt + "Seconds", 2);
+          case d:
+            return T(nt + "Milliseconds", 3);
+          default:
+            return this.clone();
+        }
+      }, u.endOf = function(c) {
+        return this.startOf(c, !1);
+      }, u.$set = function(c, _) {
+        var h, v = C.p(c), b = "set" + (this.$u ? "UTC" : ""), D = (h = {}, h[y] = b + "Date", h[Y] = b + "Date", h[k] = b + "Month", h[g] = b + "FullYear", h[m] = b + "Hours", h[o] = b + "Minutes", h[d] = b + "Seconds", h[i] = b + "Milliseconds", h)[v], T = v === y ? this.$D + (_ - this.$W) : _;
+        if (v === k || v === g) {
+          var E = this.clone().set(Y, 1);
+          E.$d[D](T), E.init(), this.$d = E.set(Y, Math.min(this.$D, E.daysInMonth())).$d;
+        } else D && this.$d[D](T);
+        return this.init(), this;
+      }, u.set = function(c, _) {
+        return this.clone().$set(c, _);
+      }, u.get = function(c) {
+        return this[C.p(c)]();
+      }, u.add = function(c, _) {
+        var h, v = this;
+        c = Number(c);
+        var b = C.p(_), D = function(x) {
+          var I = z(v);
+          return C.w(I.date(I.date() + Math.round(x * c)), v);
+        };
+        if (b === k) return this.set(k, this.$M + c);
+        if (b === g) return this.set(g, this.$y + c);
+        if (b === y) return D(1);
+        if (b === S) return D(7);
+        var T = (h = {}, h[o] = n, h[m] = a, h[d] = s, h)[b] || 1, E = this.$d.getTime() + c * T;
+        return C.w(E, this);
+      }, u.subtract = function(c, _) {
+        return this.add(-1 * c, _);
+      }, u.format = function(c) {
+        var _ = this, h = this.$locale();
+        if (!this.isValid()) return h.invalidDate || M;
+        var v = c || "YYYY-MM-DDTHH:mm:ssZ", b = C.z(this), D = this.$H, T = this.$m, E = this.$M, x = h.weekdays, I = h.months, nt = h.meridiem, Q = function(l, p, A, H) {
+          return l && (l[p] || l(_, v)) || A[p].slice(0, H);
+        }, f = function(l) {
+          return C.s(D % 12 || 12, l, "0");
+        }, r = nt || function(l, p, A) {
+          var H = l < 12 ? "AM" : "PM";
+          return A ? H.toLowerCase() : H;
+        };
+        return v.replace(B, function(l, p) {
+          return p || function(A) {
+            switch (A) {
+              case "YY":
+                return String(_.$y).slice(-2);
+              case "YYYY":
+                return C.s(_.$y, 4, "0");
+              case "M":
+                return E + 1;
+              case "MM":
+                return C.s(E + 1, 2, "0");
+              case "MMM":
+                return Q(h.monthsShort, E, I, 3);
+              case "MMMM":
+                return Q(I, E);
+              case "D":
+                return _.$D;
+              case "DD":
+                return C.s(_.$D, 2, "0");
+              case "d":
+                return String(_.$W);
+              case "dd":
+                return Q(h.weekdaysMin, _.$W, x, 2);
+              case "ddd":
+                return Q(h.weekdaysShort, _.$W, x, 3);
+              case "dddd":
+                return x[_.$W];
+              case "H":
+                return String(D);
+              case "HH":
+                return C.s(D, 2, "0");
+              case "h":
+                return f(1);
+              case "hh":
+                return f(2);
+              case "a":
+                return r(D, T, !0);
+              case "A":
+                return r(D, T, !1);
+              case "m":
+                return String(T);
+              case "mm":
+                return C.s(T, 2, "0");
+              case "s":
+                return String(_.$s);
+              case "ss":
+                return C.s(_.$s, 2, "0");
+              case "SSS":
+                return C.s(_.$ms, 3, "0");
+              case "Z":
+                return b;
+            }
+            return null;
+          }(l) || b.replace(":", "");
+        });
+      }, u.utcOffset = function() {
+        return 15 * -Math.round(this.$d.getTimezoneOffset() / 15);
+      }, u.diff = function(c, _, h) {
+        var v, b = this, D = C.p(_), T = z(c), E = (T.utcOffset() - this.utcOffset()) * n, x = this - T, I = function() {
+          return C.m(b, T);
+        };
+        switch (D) {
+          case g:
+            v = I() / 12;
+            break;
+          case k:
+            v = I();
+            break;
+          case L:
+            v = I() / 3;
+            break;
+          case S:
+            v = (x - E) / 6048e5;
+            break;
+          case y:
+            v = (x - E) / 864e5;
+            break;
+          case m:
+            v = x / a;
+            break;
+          case o:
+            v = x / n;
+            break;
+          case d:
+            v = x / s;
+            break;
+          default:
+            v = x;
+        }
+        return h ? v : C.a(v);
+      }, u.daysInMonth = function() {
+        return this.endOf(k).$D;
+      }, u.$locale = function() {
+        return J[this.$L];
+      }, u.locale = function(c, _) {
+        if (!c) return this.$L;
+        var h = this.clone(), v = X(c, _, !0);
+        return v && (h.$L = v), h;
+      }, u.clone = function() {
+        return C.w(this.$d, this);
+      }, u.toDate = function() {
+        return new Date(this.valueOf());
+      }, u.toJSON = function() {
+        return this.isValid() ? this.toISOString() : null;
+      }, u.toISOString = function() {
+        return this.$d.toISOString();
+      }, u.toString = function() {
+        return this.$d.toUTCString();
+      }, w;
+    }(), st = ot.prototype;
+    return z.prototype = st, [["$ms", i], ["$s", d], ["$m", o], ["$H", m], ["$W", y], ["$M", k], ["$y", g], ["$D", Y]].forEach(function(w) {
+      st[w[1]] = function(u) {
+        return this.$g(u, w[0], w[1]);
+      };
+    }), z.extend = function(w, u) {
+      return w.$i || (w(u, ot, z), w.$i = !0), z;
+    }, z.locale = X, z.isDayjs = N, z.unix = function(w) {
+      return z(1e3 * w);
+    }, z.en = J[U], z.Ls = J, z.p = {}, z;
+  });
+})(kt);
+var gt = kt.exports;
+const $ = /* @__PURE__ */ Dt(gt);
+var Mt = { exports: {} };
+(function(e, t) {
+  (function(s, n) {
+    e.exports = n();
+  })(pt, function() {
+    return { name: "en", weekdays: "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), months: "January_February_March_April_May_June_July_August_September_October_November_December".split("_"), ordinal: function(s) {
+      var n = ["th", "st", "nd", "rd"], a = s % 100;
+      return "[" + s + (n[(a - 20) % 10] || n[a] || n[0]) + "]";
+    } };
+  });
+})(Mt);
+var Ht = { exports: {} };
+(function(e, t) {
+  (function(s, n) {
+    e.exports = n(gt);
+  })(pt, function(s) {
+    function n(d) {
+      return d && typeof d == "object" && "default" in d ? d : { default: d };
+    }
+    var a = n(s), i = { name: "zh-tw", weekdays: "星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"), weekdaysShort: "週日_週一_週二_週三_週四_週五_週六".split("_"), weekdaysMin: "日_一_二_三_四_五_六".split("_"), months: "一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"), monthsShort: "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"), ordinal: function(d, o) {
+      return o === "W" ? d + "週" : d + "日";
+    }, formats: { LT: "HH:mm", LTS: "HH:mm:ss", L: "YYYY/MM/DD", LL: "YYYY年M月D日", LLL: "YYYY年M月D日 HH:mm", LLLL: "YYYY年M月D日dddd HH:mm", l: "YYYY/M/D", ll: "YYYY年M月D日", lll: "YYYY年M月D日 HH:mm", llll: "YYYY年M月D日dddd HH:mm" }, relativeTime: { future: "%s內", past: "%s前", s: "幾秒", m: "1 分鐘", mm: "%d 分鐘", h: "1 小時", hh: "%d 小時", d: "1 天", dd: "%d 天", M: "1 個月", MM: "%d 個月", y: "1 年", yy: "%d 年" }, meridiem: function(d, o) {
+      var m = 100 * d + o;
+      return m < 600 ? "凌晨" : m < 900 ? "早上" : m < 1100 ? "上午" : m < 1300 ? "中午" : m < 1800 ? "下午" : "晚上";
+    } };
+    return a.default.locale(i, null, !0), i;
+  });
+})(Ht);
+var xt = { exports: {} };
+(function(e, t) {
+  (function(s, n) {
+    e.exports = n(gt);
+  })(pt, function(s) {
+    function n(d) {
+      return d && typeof d == "object" && "default" in d ? d : { default: d };
+    }
+    var a = n(s), i = { name: "ja", weekdays: "日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日".split("_"), weekdaysShort: "日_月_火_水_木_金_土".split("_"), weekdaysMin: "日_月_火_水_木_金_土".split("_"), months: "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"), monthsShort: "1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"), ordinal: function(d) {
+      return d + "日";
+    }, formats: { LT: "HH:mm", LTS: "HH:mm:ss", L: "YYYY/MM/DD", LL: "YYYY年M月D日", LLL: "YYYY年M月D日 HH:mm", LLLL: "YYYY年M月D日 dddd HH:mm", l: "YYYY/MM/DD", ll: "YYYY年M月D日", lll: "YYYY年M月D日 HH:mm", llll: "YYYY年M月D日(ddd) HH:mm" }, meridiem: function(d) {
+      return d < 12 ? "午前" : "午後";
+    }, relativeTime: { future: "%s後", past: "%s前", s: "数秒", m: "1分", mm: "%d分", h: "1時間", hh: "%d時間", d: "1日", dd: "%d日", M: "1ヶ月", MM: "%dヶ月", y: "1年", yy: "%d年" } };
+    return a.default.locale(i, null, !0), i;
+  });
+})(xt);
+var q = typeof window < "u" ? window : null, wt = q === null, ct = wt ? void 0 : q.document, V = "addEventListener", P = "removeEventListener", _t = "getBoundingClientRect", lt = "_a", G = "_b", tt = "_c", ht = "horizontal", K = function() {
+  return !1;
+}, Lt = wt ? "calc" : ["", "-webkit-", "-moz-", "-o-"].filter(function(e) {
+  var t = ct.createElement("div");
+  return t.style.cssText = "width:" + e + "calc(9px)", !!t.style.length;
+}).shift() + "calc", $t = function(e) {
+  return typeof e == "string" || e instanceof String;
+}, vt = function(e) {
+  if ($t(e)) {
+    var t = ct.querySelector(e);
+    if (!t)
+      throw new Error("Selector " + e + " did not match a DOM element");
+    return t;
+  }
+  return e;
+}, R = function(e, t, s) {
+  var n = e[t];
+  return n !== void 0 ? n : s;
+}, ft = function(e, t, s, n) {
+  if (t) {
+    if (n === "end")
+      return 0;
+    if (n === "center")
+      return e / 2;
+  } else if (s) {
+    if (n === "start")
+      return 0;
+    if (n === "center")
+      return e / 2;
+  }
+  return e;
+}, Tt = function(e, t) {
+  var s = ct.createElement("div");
+  return s.className = "gutter gutter-" + t, s;
+}, At = function(e, t, s) {
+  var n = {};
+  return $t(t) ? n[e] = t : n[e] = Lt + "(" + t + "% - " + s + "px)", n;
+}, zt = function(e, t) {
+  var s;
+  return s = {}, s[e] = t + "px", s;
+}, Et = function(e, t) {
+  if (t === void 0 && (t = {}), wt)
+    return {};
+  var s = e, n, a, i, d, o, m;
+  Array.from && (s = Array.from(s));
+  var y = vt(s[0]), S = y.parentNode, k = getComputedStyle ? getComputedStyle(S) : null, L = k ? k.flexDirection : null, g = R(t, "sizes") || s.map(function() {
+    return 100 / s.length;
+  }), Y = R(t, "minSize", 100), M = Array.isArray(Y) ? Y : s.map(function() {
+    return Y;
+  }), O = R(t, "maxSize", 1 / 0), B = Array.isArray(O) ? O : s.map(function() {
+    return O;
+  }), j = R(t, "expandToMin", !1), W = R(t, "gutterSize", 10), Z = R(t, "gutterAlign", "center"), U = R(t, "snapOffset", 30), J = Array.isArray(U) ? U : s.map(function() {
+    return U;
+  }), et = R(t, "dragInterval", 1), N = R(t, "direction", ht), X = R(
+    t,
+    "cursor",
+    N === ht ? "col-resize" : "row-resize"
+  ), z = R(t, "gutter", Tt), C = R(
+    t,
+    "elementStyle",
+    At
+  ), ot = R(t, "gutterStyle", zt);
+  N === ht ? (n = "width", a = "clientX", i = "left", d = "right", o = "clientWidth") : N === "vertical" && (n = "height", a = "clientY", i = "top", d = "bottom", o = "clientHeight");
+  function st(f, r, l, p) {
+    var A = C(n, r, l, p);
+    Object.keys(A).forEach(function(H) {
+      f.style[H] = A[H];
+    });
+  }
+  function w(f, r, l) {
+    var p = ot(n, r, l);
+    Object.keys(p).forEach(function(A) {
+      f.style[A] = p[A];
+    });
+  }
+  function u() {
+    return m.map(function(f) {
+      return f.size;
+    });
+  }
+  function c(f) {
+    return "touches" in f ? f.touches[0][a] : f[a];
+  }
+  function _(f) {
+    var r = m[this.a], l = m[this.b], p = r.size + l.size;
+    r.size = f / this.size * p, l.size = p - f / this.size * p, st(r.element, r.size, this[G], r.i), st(l.element, l.size, this[tt], l.i);
+  }
+  function h(f) {
+    var r, l = m[this.a], p = m[this.b];
+    this.dragging && (r = c(f) - this.start + (this[G] - this.dragOffset), et > 1 && (r = Math.round(r / et) * et), r <= l.minSize + l.snapOffset + this[G] ? r = l.minSize + this[G] : r >= this.size - (p.minSize + p.snapOffset + this[tt]) && (r = this.size - (p.minSize + this[tt])), r >= l.maxSize - l.snapOffset + this[G] ? r = l.maxSize + this[G] : r <= this.size - (p.maxSize - p.snapOffset + this[tt]) && (r = this.size - (p.maxSize + this[tt])), _.call(this, r), R(t, "onDrag", K)(u()));
+  }
+  function v() {
+    var f = m[this.a].element, r = m[this.b].element, l = f[_t](), p = r[_t]();
+    this.size = l[n] + p[n] + this[G] + this[tt], this.start = l[i], this.end = l[d];
+  }
+  function b(f) {
+    if (!getComputedStyle)
+      return null;
+    var r = getComputedStyle(f);
+    if (!r)
+      return null;
+    var l = f[o];
+    return l === 0 ? null : (N === ht ? l -= parseFloat(r.paddingLeft) + parseFloat(r.paddingRight) : l -= parseFloat(r.paddingTop) + parseFloat(r.paddingBottom), l);
+  }
+  function D(f) {
+    var r = b(S);
+    if (r === null || M.reduce(function(H, F) {
+      return H + F;
+    }, 0) > r)
+      return f;
+    var l = 0, p = [], A = f.map(function(H, F) {
+      var rt = r * H / 100, dt = ft(
+        W,
+        F === 0,
+        F === f.length - 1,
+        Z
+      ), ut = M[F] + dt;
+      return rt < ut ? (l += ut - rt, p.push(0), ut) : (p.push(rt - ut), rt);
+    });
+    return l === 0 ? f : A.map(function(H, F) {
+      var rt = H;
+      if (l > 0 && p[F] - l > 0) {
+        var dt = Math.min(
+          l,
+          p[F] - l
+        );
+        l -= dt, rt = H - dt;
+      }
+      return rt / r * 100;
+    });
+  }
+  function T() {
+    var f = this, r = m[f.a].element, l = m[f.b].element;
+    f.dragging && R(t, "onDragEnd", K)(u()), f.dragging = !1, q[P]("mouseup", f.stop), q[P]("touchend", f.stop), q[P]("touchcancel", f.stop), q[P]("mousemove", f.move), q[P]("touchmove", f.move), f.stop = null, f.move = null, r[P]("selectstart", K), r[P]("dragstart", K), l[P]("selectstart", K), l[P]("dragstart", K), r.style.userSelect = "", r.style.webkitUserSelect = "", r.style.MozUserSelect = "", r.style.pointerEvents = "", l.style.userSelect = "", l.style.webkitUserSelect = "", l.style.MozUserSelect = "", l.style.pointerEvents = "", f.gutter.style.cursor = "", f.parent.style.cursor = "", ct.body.style.cursor = "";
+  }
+  function E(f) {
+    if (!("button" in f && f.button !== 0)) {
+      var r = this, l = m[r.a].element, p = m[r.b].element;
+      r.dragging || R(t, "onDragStart", K)(u()), f.preventDefault(), r.dragging = !0, r.move = h.bind(r), r.stop = T.bind(r), q[V]("mouseup", r.stop), q[V]("touchend", r.stop), q[V]("touchcancel", r.stop), q[V]("mousemove", r.move), q[V]("touchmove", r.move), l[V]("selectstart", K), l[V]("dragstart", K), p[V]("selectstart", K), p[V]("dragstart", K), l.style.userSelect = "none", l.style.webkitUserSelect = "none", l.style.MozUserSelect = "none", l.style.pointerEvents = "none", p.style.userSelect = "none", p.style.webkitUserSelect = "none", p.style.MozUserSelect = "none", p.style.pointerEvents = "none", r.gutter.style.cursor = X, r.parent.style.cursor = X, ct.body.style.cursor = X, v.call(r), r.dragOffset = c(f) - r.end;
+    }
+  }
+  g = D(g);
+  var x = [];
+  m = s.map(function(f, r) {
+    var l = {
+      element: vt(f),
+      size: g[r],
+      minSize: M[r],
+      maxSize: B[r],
+      snapOffset: J[r],
+      i: r
+    }, p;
+    if (r > 0 && (p = {
+      a: r - 1,
+      b: r,
+      dragging: !1,
+      direction: N,
+      parent: S
+    }, p[G] = ft(
+      W,
+      r - 1 === 0,
+      !1,
+      Z
+    ), p[tt] = ft(
+      W,
+      !1,
+      r === s.length - 1,
+      Z
+    ), L === "row-reverse" || L === "column-reverse")) {
+      var A = p.a;
+      p.a = p.b, p.b = A;
+    }
+    if (r > 0) {
+      var H = z(r, N, l.element);
+      w(H, W, r), p[lt] = E.bind(p), H[V](
+        "mousedown",
+        p[lt]
+      ), H[V](
+        "touchstart",
+        p[lt]
+      ), S.insertBefore(H, l.element), p.gutter = H;
+    }
+    return st(
+      l.element,
+      l.size,
+      ft(
+        W,
+        r === 0,
+        r === s.length - 1,
+        Z
+      ),
+      r
+    ), r > 0 && x.push(p), l;
+  });
+  function I(f) {
+    var r = f.i === x.length, l = r ? x[f.i - 1] : x[f.i];
+    v.call(l);
+    var p = r ? l.size - f.minSize - l[tt] : f.minSize + l[G];
+    _.call(l, p);
+  }
+  m.forEach(function(f) {
+    var r = f.element[_t]()[n];
+    r < f.minSize && (j ? I(f) : f.minSize = r);
+  });
+  function nt(f) {
+    var r = D(f);
+    r.forEach(function(l, p) {
+      if (p > 0) {
+        var A = x[p - 1], H = m[A.a], F = m[A.b];
+        H.size = r[p - 1], F.size = l, st(H.element, H.size, A[G], H.i), st(F.element, F.size, A[tt], F.i);
+      }
+    });
+  }
+  function Q(f, r) {
+    x.forEach(function(l) {
+      if (r !== !0 ? l.parent.removeChild(l.gutter) : (l.gutter[P](
+        "mousedown",
+        l[lt]
+      ), l.gutter[P](
+        "touchstart",
+        l[lt]
+      )), f !== !0) {
+        var p = C(
+          n,
+          l.a.size,
+          l[G]
+        );
+        Object.keys(p).forEach(function(A) {
+          m[l.a].element.style[A] = "", m[l.b].element.style[A] = "";
+        });
+      }
+    });
+  }
+  return {
+    setSizes: nt,
+    getSizes: u,
+    collapse: function(r) {
+      I(m[r]);
+    },
+    destroy: Q,
+    parent: S,
+    pairs: x
+  };
+};
+function Yt({ el: e, sizes: t = [20, 80], minSize: s = 350, gutterSize: n = 3 }) {
+  const a = Et(e, {
+    sizes: t,
+    minSize: s,
+    expandToMin: !0,
+    gutterSize: n,
+    onDrag() {
+    },
+    onDragEnd(i) {
+      i.filter((d) => isNaN(+d)).length ? i = [20, 80] : i = i.map((d) => +d);
+    }
+  });
+  return a.setSizes(t), a;
+}
+const mt = {
+  tw: {
+    today: "今日",
+    day: "日",
+    month: "月",
+    year: "年",
+    addnew_onder: "新增訂單",
+    continuous_display: "連續顯示",
+    autoassign_room: "自動排房",
+    whole_building: "包棟",
+    stock_notset: "無庫存",
+    note: "註"
+  },
+  en: {
+    today: "Today",
+    day: "Day",
+    month: "Month",
+    year: "Year",
+    addnew_onder: "New Order",
+    continuous_display: "Continuous View",
+    autoassign_room: "Automatic Room Assignment",
+    whole_building: "Whole Building",
+    stock_notset: "No Inventory Setup",
+    note: "※"
+  },
+  ja: {
+    today: "今日",
+    day: "日",
+    month: "月",
+    year: "年",
+    addnew_onder: "注文の追加",
+    continuous_display: "続けて表示する",
+    autoassign_room: "自動で部屋を割り当て",
+    whole_building: "建物全体",
+    stock_notset: "在庫なし",
+    note: "※"
+  }
+}, at = {
+  guid() {
+    function e() {
+      return Math.floor((1 + Math.random()) * 65536).toString(16).substring(1);
+    }
+    return [e() + e(), e(), e(), e(), e(), e() + e()].join("-");
+  },
+  cookies: {
+    get(e) {
+      const t = document.cookie.split(";"), s = {};
+      if (t.forEach((n) => {
+        const a = n.trim().split("=");
+        a.length >= 2 && (s[a[0]] = a.slice(1).join("="));
+      }), typeof e > "u")
+        return s;
+      if (typeof s[e] > "u")
+        return;
+      try {
+        return decodeURIComponent(s[e]);
+      } catch {
+        return s[e];
+      }
+    },
+    del(e) {
+      at.cookies.set({ key: e, val: "", days: -1 });
+    },
+    set(e) {
+      if (typeof e < "u") {
+        typeof e.days > "u" && (e.days = 15);
+        let t = "";
+        const s = /* @__PURE__ */ new Date();
+        s.setDate(s.getDate() + e.days), t = `expires=${s.toUTCString()};`;
+        let n = "";
+        typeof e.domain < "u" && (n = `domain=${e.domain};`);
+        let a = "SameSite=Lax;";
+        typeof e.SameSite < "u" && (a = `SameSite=${e.SameSite};`), document.cookie = `${e.key}=${encodeURIComponent(e.val)};${a}path=/;${t};${n}`;
+      }
+    }
+  },
+  formatLang(e = "") {
+    let t = e == null ? void 0 : e.toLowerCase();
+    switch (t) {
+      case "cn":
+      case "zh_cn":
+      case "zh-cn":
+        t = "cn";
+        break;
+      case "en":
+      case "en_us":
+      case "en-us":
+        t = "en";
+        break;
+      case "tw":
+      case "zh_tw":
+      case "zh-tw":
+        t = "tw";
+        break;
+    }
+    return t;
+  }
+};
+function it(e, t, s, n, a, i, d, o) {
+  var m = typeof e == "function" ? e.options : e;
+  return t && (m.render = t, m.staticRenderFns = s, m._compiled = !0), i && (m._scopeId = "data-v-" + i), {
+    exports: e,
+    options: m
+  };
+}
+const Ot = {
+  name: "ComponentsItem",
+  props: {
+    loading: {
+      type: Boolean,
+      default: !1
+    },
+    data: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    continuous: {
+      type: Boolean,
+      default: !1
+    }
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    colSpan() {
+      let e = null;
+      if (this.continuous && this.data._uids.length > 1) {
+        const t = this.data._uids.indexOf(this.data._uid);
+        e = [
+          `colspan-${this.data._uids.length - t}`
+          // opacity
+        ].join(" ");
+      }
+      return e;
+    }
+  },
+  methods: {
+    dragStartHandler(e) {
+      e.rawData = this.data, this.$emit("dragstart", e);
+    },
+    hasSlot(e = "default") {
+      return !!this.$slots[e] || !!this.$scopedSlots[e];
+    },
+    clickHandler() {
+      this.$emit("click", this.data);
+    },
+    assignClickHandler(e) {
+      e.stopPropagation(), this.$emit("assign", {
+        value: this.data,
+        e
+      });
+    }
+  }
+};
+var jt = function() {
+  var t = this, s = t._self._c;
+  return s("div", { directives: [{ name: "b-tooltip", rawName: "v-b-tooltip.hover", modifiers: { hover: !0 } }], staticClass: "components-item", class: [
+    t.data.checked_status,
+    {
+      assign: t.data.assign,
+      unassign: !t.data.assign,
+      continuous: t.continuous
+    },
+    t.colSpan
+  ], attrs: { id: t.data._uid, title: t.data.tooltip, "data-type": "item", "data-_uid": t.data._uid, "data-_uids": t.data._uids, draggable: "true", "data-order": t.data.order }, on: { dragstart: t.dragStartHandler, click: t.clickHandler } }, [s("b-overlay", { attrs: { "spinner-variant": "primary", show: t.loading } }, [t.hasSlot("slot-item-info") ? [t._t("slot-item-info", null, { scope: t.data })] : [t._v(" " + t._s(t.data.title) + ", " + t._s(t.data.start) + "-" + t._s(t.data.end) + ", " + t._s(t.data.assign) + " ")], s("div", { staticClass: "assign-button", on: { click: t.assignClickHandler } }, [s("i", { staticClass: "fas fa-chevron-circle-right" })])], 2)], 1);
+}, Rt = [], It = /* @__PURE__ */ it(
+  Ot,
+  jt,
+  Rt,
+  !1,
+  null,
+  "e8914dbe"
+);
+const Bt = It.exports, Nt = {
+  name: "ComponentsScheduler",
+  components: {
+    orderItem: Bt
+  },
+  props: {
+    today: {
+      type: [Object, Number, String],
+      default() {
+        return Date.now();
+      }
+    },
+    loading: {
+      type: Boolean,
+      default: !1
+    },
+    showWait: {
+      type: Boolean,
+      default: !0
+    },
+    locale: {
+      type: String,
+      default: "en"
+    },
+    range: {
+      type: Object,
+      default() {
+        return {
+          // start: '2023-01-01', end: '2023-01-07'
+        };
+      }
+    },
+    resource: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    stock: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    items: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    holiday: {
+      type: Array,
+      default() {
+        return [
+          // {
+          //   date: '2023-01-01',
+          //   display_name: '元旦'
+          // }
+        ];
+      }
+    },
+    format: {
+      type: String,
+      default: "YYYY-MM-DD"
+    },
+    defaultHoliday: {
+      type: Array,
+      default() {
+        return [6, 0];
+      }
+    },
+    // 允許跨日
+    // todo: 連續顯示移動時，因為都是移動第一個
+    // 所以無法判斷使用者是要第一個移動第一個還是其他
+    // 會造成沒有要"跨日"而跨日
+    allowChangeDate: {
+      type: Boolean,
+      default: !1
+    },
+    // 允許跨房型
+    allowChangeType: {
+      type: Boolean,
+      default: !1
+    },
+    //
+    allowEdit: {
+      type: Boolean,
+      default: !1
+    },
+    allowContinuous: {
+      type: Boolean,
+      default: !1
+    },
+    allowAutoAssign: {
+      type: Boolean,
+      default: !1
+    },
+    marginTop: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      cname: "resource-item",
+      grouping: {},
+      mousePosition: 0,
+      currentChildId: {}
+    };
+  },
+  computed: {
+    dict() {
+      return mt[this.lang] || mt.en;
+    },
+    lang() {
+      return at.formatLang(this.locale);
+    },
+    now() {
+      return $(this.today).format(this.format);
+    },
+    resourceList: {
+      get() {
+        return this.resource;
+      },
+      set(e) {
+        this.$emit("update:resource", e);
+      }
+    },
+    itemList: {
+      get() {
+        const e = this.deepCopy(this.items);
+        return e.sort((t, s) => t.start === s.start ? 0 : t.start > s.start ? 1 : -1), e;
+      },
+      set(e) {
+        this.$emit("update:items", e);
+      }
+    },
+    viewCount() {
+      const e = $(this.range.start);
+      return $(this.range.end).diff(e, "days") + 1;
+    },
+    dates() {
+      const e = [...new Array(this.viewCount)].fill({}), t = {};
+      let s = "";
+      const n = e.map((a, i) => {
+        const d = $(this.range.start).add(i, "days"), o = d.format(this.format), m = this.holiday.find((k) => k.date === o), y = d.format("MM"), S = s !== y;
+        return S && (s = y), t[y] || (t[y] = 0), t[y]++, {
+          active: S,
+          date: o,
+          year: d.format("YYYY"),
+          month: y,
+          day: d.format("D"),
+          week: d.format("dd"),
+          ...m ? { holiday: m.display_name } : {}
+        };
+      });
+      return n.forEach((a) => {
+        a.active && (a.cols = t[a.month]);
+      }), n;
+    },
+    dataResult() {
+      const e = {}, t = {};
+      this.itemList.forEach((o) => {
+        o.order_group = o.order_group || Math.random(), t[o.order_group] || (t[o.order_group] = {});
+        const m = this.resourceList.find((L) => L.id === o.room_type);
+        m && Array.isArray(m.children) && m.children.find((L) => L.id === o.room_number_id) || (o.room_number_id = null, o.nan || (o.nan = 1)), typeof o._uid > "u" && (o._uid = at.guid());
+        const y = this.grouping[o._uid];
+        let S = [o.room_type, o.room_number_id, o.assign, y].join();
+        const k = t[o.order_group][S];
+        if (!k)
+          t[o.order_group][S] = [];
+        else {
+          const L = k[k.length - 1].end;
+          k.length > 0 && (k[0].start === o.start || // 同日：待排房
+          L !== o.start) && (e[S] || (e[S] = S + o.end), S = e[S] || S, t[o.order_group][S] || (t[o.order_group][S] = []));
+        }
+        t[o.order_group][S].push(o);
+      });
+      const s = this.deepCopy(this.itemList), n = this.checkOverwrite(s), a = [], i = {};
+      this.itemList.forEach((o) => {
+        let m = this.allowAutoAssign || o.assign ? o.room_number_id : null;
+        if (n.length) {
+          const g = [o.start, o.room_type, o.room_number_id].join();
+          n.includes(g) && (a.includes(g) ? (m = null, o.room_number_id = null, o.nan = 2) : a.push(g));
+        }
+        const y = [o.start, o.room_type, m].join();
+        i[y] || (i[y] = []);
+        let S = [], k = [];
+        const L = Object.entries(t[o.order_group]).findIndex(([g, Y]) => Y.find((M) => M._uid === o._uid));
+        L !== -1 && (S = Object.entries(t[o.order_group])[L][1].map((g) => g._uid), k = Object.entries(t[o.order_group])[L][1].map((g) => g.item_id)), i[y].push({
+          ...o,
+          _uids: S,
+          items: k
+        });
+      });
+      const d = {};
+      return Object.entries(i).forEach(([o, m]) => {
+        m.sort((y, S) => {
+          const k = y._uids.join(), L = S._uids.join();
+          switch (`${!!d[k]}${!!d[L]}`) {
+            case "truetrue":
+              return 0;
+            case "truefalse":
+              return -1;
+            case "falsetrue":
+              return 1;
+          }
+          return y._uids.length === S._uids.length ? 0 : y._uids.length > S._uids.length ? -1 : 1;
+        }), m.forEach((y, S) => {
+          if (y._uids.length) {
+            const k = y._uids.join();
+            d[k] || (d[k] = this.getMinOrder(m, d), Object.entries(i).forEach(([L, g]) => {
+              g.forEach((Y, M) => {
+                (Y._uids.join() || "") === k && (Y.order = d[k]);
+              });
+            }));
+          }
+        });
+      }), i;
+    },
+    dateOpenList() {
+      const e = {};
+      return this.dates.forEach((t) => {
+        e[t] = this.getStock(t.date).full;
+      }), e;
+    }
+  },
+  watch: {
+    items: {
+      handler() {
+        setTimeout(() => {
+          this.updateRowspan();
+        });
+      },
+      immediate: !0,
+      deep: !0
+    },
+    allowAutoAssign: {
+      handler() {
+        setTimeout(() => {
+          this.updateRowspan();
+        });
+      },
+      immediate: !1,
+      deep: !0
+    },
+    range: {
+      handler() {
+        this.resourceList.forEach((e) => {
+          delete e.layout;
+        }), setTimeout(() => {
+          this.updateRowspan();
+        });
+      },
+      immediate: !1,
+      deep: !0
+    }
+  },
+  async mounted() {
+    await this.$nextTick(), setTimeout(() => {
+      this.updateRowspan(), this.scrollEventSet(), window.scrollToToday();
+    });
+  },
+  beforeDestroy() {
+    if (this._scrollHandler && window.removeEventListener("scroll", this._scrollHandler), this._scrollOnceHandler && window.removeEventListener("scroll", this._scrollOnceHandler), this._horizontalScrollHandler) {
+      const e = document.querySelector(".components-scheduler");
+      e && e.removeEventListener("scroll", this._horizontalScrollHandler);
+    }
+    clearTimeout(this.debounceSettimeoutUpdateRowspan);
+  },
+  methods: {
+    getLocaleTitle(e) {
+      let t = "";
+      switch ($.locale()) {
+        case "en":
+          t = $(e).format("MMMM YYYY");
+          break;
+        default:
+          t = $(e).format(`YYYY${this.i18n("year")}MMM`);
+          break;
+      }
+      return t;
+    },
+    hasSlot(e = "default") {
+      return !!this.$slots[e] || !!this.$scopedSlots[e];
+    },
+    isActive(e) {
+      return typeof e.active < "u" ? e.active : !0;
+    },
+    isAllActive(e) {
+      return this.isActive(e) && (typeof e.waitActive < "u" ? e.waitActive : !0);
+    },
+    updateItemPosition() {
+      const e = this.deepCopy(this.itemList);
+      e.forEach((t) => {
+        const s = document.querySelector(`[data-_uid="${t._uid}"]`);
+        if (s) {
+          const { left: n, right: a } = s.getBoundingClientRect();
+          t.left = n.toFixed(0), t.right = a.toFixed(0);
+        }
+      }), this.itemList = e;
+    },
+    mousedownHandler(e) {
+      this.mousePosition = e.x;
+    },
+    i18n(e) {
+      return this.dict[e];
+    },
+    scrollEventSet() {
+      const e = document.querySelector(".components-resource .resource-header.stuck"), t = document.querySelector(".components-scheduler .scheduler-header.stuck"), s = document.querySelector(".header-months");
+      e && t && (this._scrollOnceHandler = () => {
+        this.offsetY = t.getBoundingClientRect().top + 1 - this.marginTop;
+      }, window.addEventListener("scroll", this._scrollOnceHandler, { once: !0 }), this._scrollHandler = () => {
+        const i = this.getScroll().top - this.offsetY;
+        t.style.top = i > 0 ? `${i}px` : 0, e.style.top = t.style.top, s && (s.style.top = t.style.top);
+      }, window.addEventListener("scroll", this._scrollHandler));
+      const n = document.querySelector(".components-scheduler");
+      n && (this._horizontalScrollHandler = function() {
+        const a = document.querySelector(".header-months");
+        a && (a.scrollLeft = this.scrollLeft);
+      }, n.addEventListener("scroll", this._horizontalScrollHandler)), this.updateMonthsBarStyle();
+    },
+    updateMonthsBarStyle() {
+      const e = document.querySelectorAll(".header-months > li > div");
+      document.querySelectorAll(".scheduler-header .months > li > .scheduler-header-label").forEach((t, s) => {
+        const n = t.getBoundingClientRect().width;
+        e[s].style.setProperty("width", `${n}px`, "important");
+        const a = t.parentElement.getBoundingClientRect().width + 0.5;
+        e[s].parentElement.style.setProperty("width", `${a}px`), e[s].parentElement.style.removeProperty("z-index"), [...t.classList].includes("active") && (e[s].parentElement.style.zIndex = 1);
+      });
+    },
+    getScroll() {
+      const e = document.body, t = document.documentElement, s = parseFloat(window.pageYOffset || e.scrollTop || t.scrollTop);
+      return {
+        top: s,
+        bottom: e.clientHeight - window.innerHeight - s
+      };
+    },
+    getStock(e, t) {
+      var s;
+      return ((s = this.stock[t]) == null ? void 0 : s[e]) || {};
+    },
+    checkStock(e, t) {
+      return typeof this.getStock(e, t).stock < "u";
+    },
+    checkLock(e, t) {
+      const s = this.getStock(e, t);
+      return typeof s.open > "u" ? !1 : !s.open;
+    },
+    getAllStockFull(e) {
+      let t = !1;
+      return Object.entries(this.stock).forEach(([s, n]) => {
+        var a;
+        t || (t = !!((a = n[e]) != null && a.full));
+      }), t;
+    },
+    getMinOrder(e, t) {
+      let s = 1;
+      if (e.length > 1) {
+        const n = e.map((a) => t[a._uids.join()]).filter((a) => a);
+        for (; n.includes(s); )
+          s += 1;
+      }
+      return s;
+    },
+    waitDataResult(e) {
+      const t = this.dataResult[e] || [];
+      return t.sort((s, n) => s.order === n.order ? 0 : s.order > n.order ? 1 : -1), t;
+    },
+    //
+    deepCopy(e) {
+      return JSON.parse(JSON.stringify(e));
+    },
+    isToday(e) {
+      return e === this.now;
+    },
+    isWeekend(e) {
+      return this.defaultHoliday.includes($(e).day());
+    },
+    isHoliday(e) {
+      const t = this.holiday.find((s) => s.date === e);
+      return (t == null ? void 0 : t.display_name) || "";
+    },
+    //
+    dateTooltip(e) {
+      const t = [e], s = this.isToday(e), n = this.isHoliday(e);
+      return s && t.push(`(${this.i18n("today")})`), n && t.push(`(${n})`), t.join("");
+    },
+    dateClickHandler(e, t) {
+      this.$emit("click", {
+        type: "date",
+        value: e,
+        e: t
+      });
+    },
+    stockClickHandler(e, t) {
+      const { date: s, room: n, num: a } = e;
+      this.$emit("click", {
+        type: "stock",
+        value: e,
+        data: this.getStock(s, n),
+        e: t
+      });
+    },
+    orderClickHandler(e) {
+      this.$emit("click", {
+        type: "order",
+        value: e
+      });
+    },
+    assignClickHandler(e) {
+      const { value: t, e: s } = e;
+      this.$emit("assign", {
+        type: "assign",
+        value: t,
+        e: s
+      });
+    },
+    itemClickHandler(e) {
+      const { date: t, room: s, num: n, full: a } = e;
+      this.allowEdit && !a && this.$emit("click", {
+        type: "item",
+        value: e
+      });
+    },
+    // drag drop
+    dragStartHandler(e) {
+      var s;
+      this.currentChildId = e.target.parentNode.dataset;
+      const t = (s = e.target) == null ? void 0 : s.dataset;
+      if (t != null && t._uid) {
+        const n = {
+          ...this.currentChildId,
+          _uid: t._uid,
+          _uids: t._uids,
+          rawData: e.rawData
+        };
+        this.dragTarget = n, e.dataTransfer.setData("text/plain", JSON.stringify(n)), e.dataTransfer.effectAllowed = "move";
+      }
+      e.target.style.opacity = 0.5, this.$emit("drop-start", e);
+    },
+    dragOverHandler(e) {
+      document.querySelectorAll(".contents-row.border-primary").forEach((i) => {
+        i.classList.remove("border-primary");
+      }), document.body.style.cursor = "";
+      const { type: t, id: s, date: n, disabled: a } = e.target.dataset;
+      if (s) {
+        const i = document.querySelector(`[data-id="${s.split(",")[1]}"]`);
+        i && i.closest(".contents-row").classList.add("border-primary");
+      }
+      if (a === "true")
+        document.body.style.cursor = "not-allowed", e.target.style.background = "#f2f2f2";
+      else {
+        e.preventDefault();
+        const i = e.target.querySelectorAll(".components-item").length;
+        if (s && (t === "wait" || !i) && (e.target.style.background = "#f2f2f2"), this.allowChangeDate || n !== this.currentChildId.date && (document.body.style.cursor = "not-allowed"), !this.allowChangeType)
+          try {
+            const d = (s || "").split(",")[0], o = (this.currentChildId.id || "").split(",")[0];
+            d !== o && (document.body.style.cursor = "not-allowed");
+          } catch {
+          }
+      }
+      e.target.style.pointerEvents = "", t === "item" && (e.target.style.pointerEvents = "none"), this.$emit("drop-over", e);
+    },
+    dragLeaveHandler(e) {
+      e.preventDefault(), e.target.style.background = "", this.$emit("drop-leave", e);
+    },
+    dragEnterHandler(e) {
+      e.preventDefault(), this.$emit("drop-enter", e);
+    },
+    dragEndHandler(e) {
+      e.preventDefault(), this.clearDragStyle(), this.$emit("drop-end", e);
+    },
+    dropHandler(e) {
+      if (e.preventDefault(), this.clearDragStyle(e), !this.allowChangeType)
+        try {
+          const a = (JSON.parse(e.dataTransfer.getData("text/plain")).id || "").split(",")[0], i = (e.target.dataset.id || "").split(",")[0];
+          if (a !== i) {
+            this.updateRowspan();
+            return;
+          }
+        } catch {
+          return;
+        }
+      const { type: t, id: s } = e.target.dataset;
+      if (s) {
+        const n = e.target.querySelectorAll(".components-item").length, a = t !== "wait";
+        try {
+          const i = JSON.parse(e.dataTransfer.getData("text/plain")), { _uid: d, _uids: o, rawData: m } = i, { date: y, id: S } = e.target.dataset, [k, L] = S.split(",").map((g) => +g);
+          if (t === "wait" || !n || S === i.id) {
+            const g = this.deepCopy(this.itemList);
+            if (this.allowContinuous) {
+              const M = o.split(",");
+              let O = 0;
+              if (this.allowChangeDate) {
+                let B = -1, j = Number.MAX_SAFE_INTEGER;
+                M.forEach((Z, U) => {
+                  const J = g.findIndex((X) => X._uid === Z), et = +g[J].left, N = this.mousePosition - et;
+                  N > 0 && N < j && (j = N, B = U);
+                });
+                const W = g.findIndex((Z) => Z._uid === M[B]);
+                O = $(y).diff($(g[W].start), "days");
+              } else if (y !== i.date)
+                return;
+              M.forEach((B) => {
+                const j = g.findIndex((W) => W._uid === B);
+                g[j].assign = a, g[j].room_type = k, g[j].room_number_id = L || null, O && (g[j].start = $(g[j].start).add(O, "days").format(this.format), g[j].end = $(g[j].end).add(O, "days").format(this.format));
+              });
+            } else {
+              const M = g.findIndex((B) => B._uid === d);
+              g[M].assign = a, g[M].room_type = k, g[M].room_number_id = L || null;
+              const O = $(y).diff($(g[M].start), "days");
+              if (!this.allowChangeDate)
+                try {
+                  const B = JSON.parse(e.dataTransfer.getData("text/plain")), j = e.target.dataset.date;
+                  if (B.date && B.date !== j) {
+                    this.updateRowspan();
+                    return;
+                  }
+                } catch {
+                  return;
+                }
+              O && (g[M].start = y, g[M].end = $(g[M].end).add(O, "days").format(this.format));
+            }
+            const Y = this.checkOverwrite(g);
+            if (!Y.length)
+              setTimeout(() => {
+                this.itemList = g, this.$emit("drop", {
+                  _uid: d,
+                  date: y,
+                  room: k,
+                  ...L ? { num: L } : null,
+                  rawData: m
+                });
+              });
+            else {
+              const M = Y[0].split(","), O = document.querySelector([
+                '[data-type="content"]',
+                `[data-date="${M[0]}"]`,
+                `[data-id="${[M[1], M[2]].join()}"]`
+              ].join(""));
+              O && (O.classList.add("easeInAnim"), setTimeout(() => {
+                O.classList.remove("easeInAnim");
+              }, 500));
+            }
+          }
+        } catch {
+          return;
+        }
+      }
+      setTimeout(() => {
+        this.grouping = {}, this.updateRowspan();
+      });
+    },
+    clearDragStyle() {
+      this.currentChildId = {}, document.body.style.cursor = "", document.querySelectorAll(".components-item").forEach((e) => {
+        e.style.pointerEvents = "", e.style.background = "", e.style.opacity = "";
+      }), document.querySelectorAll(".resource-item li > div[data-type]").forEach((e) => {
+        e.style.background = "";
+      }), document.querySelectorAll(".contents-row.border-primary").forEach((e) => {
+        e.classList.remove("border-primary");
+      });
+    },
+    updateRowspan() {
+      if (this.debounceSettimeoutUpdateRowspan)
+        return;
+      clearTimeout(this.debounceSettimeoutUpdateRowspan), this.debounceSettimeoutUpdateRowspan = setTimeout(() => {
+        delete this.debounceSettimeoutUpdateRowspan;
+      }, 100);
+      const e = this.deepCopy(this.resourceList);
+      e.forEach((n, a) => {
+        delete e[a].layout;
+      });
+      const t = [], s = [
+        `.${this.cname} [data-type="wait"]`,
+        `.${this.cname} [data-type="content"]`
+      ].join();
+      document.querySelectorAll(s).forEach((n) => {
+        const a = n.querySelectorAll(".components-item").length, i = n.dataset.id, d = i.split(",")[0], o = i.split(",")[1], m = e.findIndex((y) => y.id === +d);
+        if (m !== -1) {
+          const y = e[m];
+          y.layout || (y.layout = {}), y.layout[o] || (y.layout[o] = {
+            rowspan: 0
+          }), o === "wait" && (t[d] || (t[d] = 0), t[d] += a, y.layout[o].waitRowspan = t[d]), y.layout[o].rowspan = Math.max(y.layout[o].rowspan, a), this.allowAutoAssign && (y.waitActive = !0), e[m] = y;
+        }
+      }), this.resourceList = e, setTimeout(() => {
+        this.clearDragStyle(), this.updateItemPosition(), this.updateMonthsBarStyle();
+      });
+    },
+    checkOverwrite(e) {
+      const t = this.deepCopy(e), s = {};
+      return this.allowAutoAssign || t.forEach((n) => {
+        n.assign || (n.room_number_id = null);
+      }), t.filter((n) => n.room_number_id).forEach((n) => {
+        const a = [n.start, n.room_type, n.room_number_id].join();
+        s[a] || (s[a] = []), s[a].push(n);
+      }), [
+        ...new Set(Object.entries(s).map((n) => n[1]).filter((n) => n.length > 1).flat().map((n) => [n.start, n.room_type, n.room_number_id].join()))
+      ];
+    },
+    parseLayoutInfo(e, t) {
+      var s, n;
+      return ((n = (s = e == null ? void 0 : e.layout) == null ? void 0 : s[t]) == null ? void 0 : n.rowspan) || 1;
+    }
+  }
+};
+var Wt = function() {
+  var t = this, s = t._self._c;
+  return s("div", { staticClass: "components-scheduler" }, [s("ul", { staticClass: "header-months" }, t._l(t.dates, function(n, a) {
+    return s("li", { key: `header-months_${a}`, attrs: { title: `${n.year}/${n.month}` } }, [s("div", { class: [{ active: n.active }, n.cols ? `colspan-${n.cols}` : ""] }, [t._v(" " + t._s(t.getLocaleTitle(n.date)) + " ")])]);
+  }), 0), s("b-overlay", { class: `view-${t.viewCount}`, attrs: { "spinner-variant": "primary", show: t.loading } }, [s("b-form-row", { staticClass: "scheduler-header stuck" }, [s("b-col", { attrs: { cols: "12" } }, [s("ul", { staticClass: "months" }, t._l(t.dates, function(n, a) {
+    return s("li", { key: `months_${a}`, attrs: { title: `${n.year}/${n.month}` } }, [s("div", { class: ["scheduler-header-label", { active: n.active }, n.cols ? `colspan-${n.cols}` : ""] }, [t._v(" " + t._s(n.year) + "/" + t._s(n.month) + " ")])]);
+  }), 0)]), s("b-col", { attrs: { cols: "12" } }, [s("ul", { staticClass: "dates" }, t._l(t.dates, function(n, a) {
+    return s("li", { key: `dates_${a}`, class: [
+      "nowrap",
+      "cursor-pointer",
+      {
+        today: t.isToday(n.date),
+        holiday: t.isHoliday(n.date),
+        weekend: t.isWeekend(n.date)
+      }
+    ], attrs: { id: `dates_${a}`, boundary: "document" }, on: { click: function(i) {
+      return t.dateClickHandler(n.date, i);
+    } } }, [s("div", { staticClass: "px-1" }, [s("span", [t._v(t._s(n.week) + " " + t._s(n.day))]), t.getAllStockFull(n.date) ? s("small", { staticClass: "wb-icon" }, [t._v(" " + t._s(t.i18n("whole_building")) + " ")]) : t._e()]), s("b-tooltip", { attrs: { target: `dates_${a}`, "custom-class": "b-tooltip-class", placement: "top", triggers: "hover", boundary: "document" } }, [t._v(" " + t._s(t.dateTooltip(n.date)) + " ")])], 1);
+  }), 0)])], 1), t._l(t.resourceList, function(n, a) {
+    return [s("b-form-row", { key: `contents_${a}`, staticClass: "contents-row stock" }, [s("b-col", { class: t.cname, attrs: { cols: "12" } }, [s("ul", { staticClass: "contents stock" }, t._l(t.dates, function(i, d) {
+      return s("li", { key: `contents_${a}_${d}`, class: {
+        full: t.getStock(i.date, n.id).full,
+        "stock-notset": !t.checkStock(i.date, n.id)
+      } }, [s("div", { on: { click: function(o) {
+        return t.stockClickHandler({ date: i.date, room: n.id }, o);
+      } } }, [t.hasSlot("slot-item-stock") ? [t._t("slot-item-stock", null, { scope: t.getStock(i.date, n.id) })] : [t.checkLock(i.date, n.id) ? s("small", { staticClass: "lock-icon" }, [s("i", { staticClass: "fa-solid fa-lock" })]) : t._e(), t.checkStock(i.date, n.id) ? s("span", [t._v(" " + t._s(t.getStock(i.date, n.id).stock) + " ")]) : s("small", [t._v(" " + t._s(t.i18n("stock_notset")) + " ")])]], 2)]);
+    }), 0)])], 1), t.showWait ? s("b-form-row", { key: `contents_wait_${a}`, class: ["contents-row collapse-wait", { active: t.isAllActive(n) }] }, [s("b-col", { class: [t.cname, "rowspan-1", `rowspan-${t.parseLayoutInfo(n, "wait")}`], attrs: { cols: "12" } }, [s("ul", { staticClass: "contents wait" }, t._l(t.dates, function(i, d) {
+      return s("li", { key: `contents_wait_${a}_${d}`, class: { full: t.getStock(i.date, n.id).full } }, [s("div", { attrs: { "data-type": "wait", droppable: "true", "data-date": i.date, "data-id": [n.id, "wait"].join() }, on: { dragenter: t.dragEnterHandler, dragleave: t.dragLeaveHandler, dragover: t.dragOverHandler, dragend: t.dragEndHandler, drop: t.dropHandler, click: function(o) {
+        if (o.target !== o.currentTarget) return null;
+        t.itemClickHandler({
+          date: i.date,
+          room: n.id,
+          num: "wait",
+          full: t.getStock(i.date, n.id).full
+        });
+      }, mousedown: t.mousedownHandler } }, [t._l(t.waitDataResult([i.date, n.id, ""].join()), function(o, m) {
+        return [s("order-item", { key: `order-item_${m}`, class: `item-order-${o.order}`, attrs: { data: o, continuous: t.allowContinuous }, on: { dragstart: t.dragStartHandler, click: t.orderClickHandler, assign: t.assignClickHandler }, scopedSlots: t._u([t.hasSlot("slot-item-info") ? { key: "slot-item-info", fn: function({ scope: y }) {
+          return [t._t("slot-item-info", null, { scope: y })];
+        } } : null], null, !0) })];
+      })], 2)]);
+    }), 0)])], 1) : t._e(), t._l(n.children, function(i, d) {
+      return s("b-form-row", { key: `contents_${a}_${d}`, class: ["contents-row collapse", { active: t.isActive(n) }] }, [s("b-col", { class: t.cname, attrs: { cols: "12" } }, [s("ul", { staticClass: "contents" }, t._l(t.dates, function(o, m) {
+        return s("li", { key: `contents_${a}_${d}_${m}`, class: { full: t.getStock(o.date, n.id).full } }, [s("div", { attrs: { "data-type": "content", "data-date": o.date, "data-id": [n.id, i.id].join(), "data-disabled": i.disabled }, on: { dragenter: t.dragEnterHandler, dragleave: t.dragLeaveHandler, dragover: t.dragOverHandler, dragend: t.dragEndHandler, drop: t.dropHandler, click: function(y) {
+          if (y.target !== y.currentTarget) return null;
+          t.itemClickHandler({
+            date: o.date,
+            room: n.id,
+            num: i.id,
+            full: t.getStock(o.date, n.id).full
+          });
+        }, mousedown: t.mousedownHandler } }, [t._l(t.dataResult[[o.date, n.id, i.id].join()] || [], function(y, S) {
+          return [s("order-item", { key: `order-item_${S}`, attrs: { data: y, continuous: t.allowContinuous }, on: { dragstart: t.dragStartHandler, click: t.orderClickHandler, assign: t.assignClickHandler }, scopedSlots: t._u([t.hasSlot("slot-item-info") ? { key: "slot-item-info", fn: function({ scope: k }) {
+            return [t._t("slot-item-info", null, { scope: k })];
+          } } : null], null, !0) })];
+        })], 2)]);
+      }), 0)])], 1);
+    })];
+  })], 2)], 1);
+}, Ft = [], qt = /* @__PURE__ */ it(
+  Nt,
+  Wt,
+  Ft,
+  !1,
+  null,
+  "9d503ac0"
+);
+const Ut = qt.exports, Jt = {
+  name: "ComponentsResource",
+  components: {},
+  props: {
+    debug: {
+      type: Boolean,
+      default: !1
+    },
+    headerTitle: {
+      type: String,
+      default: "Header Title"
+    },
+    showWait: {
+      type: Boolean,
+      default: !0
+    },
+    waitTitle: {
+      type: String,
+      default: "Wait Title"
+    },
+    data: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  },
+  data() {
+    return {
+      isMobile: window.innerWidth < 992,
+      pageLoad: !1,
+      expandAll: !0
+    };
+  },
+  computed: {
+    checkHasSomeChild() {
+      return this.dataList.map((e) => e.children && e.children.length).filter((e) => e).reduce((e, t) => e + t, 0);
+    },
+    dataList: {
+      get() {
+        return [
+          ...this.data.map((t) => ({
+            ...t,
+            active: typeof t.active > "u" ? !0 : t.active,
+            waitActive: typeof t.waitActive > "u" ? !0 : t.waitActive
+          }))
+        ];
+      },
+      set(e) {
+        this.$emit("update:data", e);
+      }
+    },
+    isAllExpand() {
+      return !this.dataList.some((e) => !e.active);
+    },
+    isAllCollapse() {
+      return !this.dataList.some((e) => e.active);
+    }
+  },
+  mounted() {
+    const e = this.dataList.map((t) => ({
+      ...t,
+      active: typeof t.active > "u" ? !0 : t.active
+    }));
+    this.pageLoad || (this.pageLoad = !0, this.dataList = e), this._resizeHandler = () => {
+      this.isMobile = window.innerWidth < 992;
+    }, window.addEventListener("resize", this._resizeHandler), this._resizeHandler();
+  },
+  beforeDestroy() {
+    this._resizeHandler && window.removeEventListener("resize", this._resizeHandler);
+  },
+  methods: {
+    hasChild(e) {
+      return e && Array.isArray(e.children) && e.children.length;
+    },
+    hasSlot(e = "default") {
+      return !!this.$slots[e] || !!this.$scopedSlots[e];
+    },
+    collapseAllClickHandler(e = 0) {
+      e === 0 && (this.expandAll = !this.expandAll), e < this.dataList.length && (this.dataList[e].active = this.expandAll, this.dataList = [...this.dataList], setTimeout(() => {
+        this.collapseAllClickHandler(e += 1);
+      }, 100));
+    },
+    collapseWaitClickHandler(e) {
+      const t = this.dataList;
+      t[e].waitActive = !t[e].waitActive, this.dataList = t;
+    },
+    collapseClickHandler(e) {
+      const t = this.dataList;
+      t[e].active = !t[e].active, this.hasChild(t[e]) && (this.dataList = t, this.isAllCollapse && (this.expandAll = !1), this.isAllExpand && (this.expandAll = !0));
+    },
+    parseLayoutInfo(e, t) {
+      var s, n;
+      return ((n = (s = e == null ? void 0 : e.layout) == null ? void 0 : s[t]) == null ? void 0 : n.rowspan) || 1;
+    }
+  }
+};
+var Vt = function() {
+  var t = this, s = t._self._c;
+  return s("div", { staticClass: "components-resource" }, [s("div", { staticClass: "resource-header stuck" }, [s("span", { staticClass: "arrow-icon ellipsis-1", class: { active: t.expandAll }, on: { click: function(n) {
+    return t.collapseAllClickHandler();
+  } } }, [t.checkHasSomeChild ? s("i", { staticClass: "fa-solid fa-angles-down" }) : t._e(), t._v(" " + t._s(t.headerTitle) + " ")])]), t._l(t.dataList, function(n, a) {
+    return [s("b-form-row", { key: a, staticClass: "resource-type" }, [s("b-col", { staticClass: "resource-item pr-0", attrs: { cols: "12" } }, [s("b-form-row", [s("b-col", { staticClass: "label pl-0", attrs: { "data-id": n.id } }, [s("span", { staticClass: "arrow-icon ellipsis-1", class: { active: n.active }, attrs: { id: `name_${a}` }, on: { click: function(i) {
+      return t.collapseClickHandler(a);
+    } } }, [t.hasChild(n) ? s("i", { staticClass: "fa-solid fa-angle-down" }) : t._e(), s("span", { class: { "pl-1": !t.isMobile } }, [s("b", [t._v(t._s(n.name))])]), s("b-tooltip", { attrs: { target: `name_${a}`, "custom-class": "b-tooltip-class", placement: "topright", triggers: "hover", boundary: "document" } }, [t._v(" " + t._s(n.name) + " ")])], 1), n.layout && n.layout.wait && n.layout.wait.waitRowspan > 0 ? [s("b-badge", { staticClass: "b-badge-class", attrs: { id: `badge_${a}` }, on: { click: function(i) {
+      return t.collapseWaitClickHandler(a);
+    } } }, [t._v(" " + t._s(n.layout.wait.waitRowspan) + " ")]), s("b-tooltip", { attrs: { target: `badge_${a}`, "custom-class": "b-tooltip-class", placement: "topright", triggers: "hover", boundary: "document" } }, [t._v(" " + t._s(t.waitTitle) + " ")])] : t._e()], 2), n.extend ? [s("b-col", { staticClass: "p-0", attrs: { cols: "auto" } }, [s("small", [t._v(t._s(n.extend))])])] : t._e()], 2)], 1)], 1), t.showWait ? s("b-form-row", { key: `contents_wait_${a}`, staticClass: "contents-row collapse-wait", class: { active: n.active && n.waitActive } }, [s("b-col", { staticClass: "resource-children-item", class: ["rowspan-1", `rowspan-${t.parseLayoutInfo(n, "wait")}`], attrs: { cols: "12" } }, [s("b-form-row", [s("b-col", { staticClass: "label" }, [s("span", { class: { "pl-2": !t.isMobile } }, [t._v(t._s(t.waitTitle))])])], 1)], 1)], 1) : t._e(), t._l(n.children, function(i, d) {
+      return s("b-form-row", { key: `contents_${a}_${d}`, staticClass: "contents-row collapse", class: { active: n.active } }, [s("b-col", { staticClass: "resource-children-item", attrs: { cols: "12" } }, [s("b-form-row", [s("b-col", { staticClass: "label", attrs: { "data-id": i.id, "data-rowspan": t.parseLayoutInfo(n, i.id) } }, [s("span", { class: ["text-left ellipsis-1", { "pl-2": !t.isMobile }] }, [t._v(t._s(i.name))])]), i.disabled ? s("b-col", { staticClass: "pr-0", attrs: { cols: "auto" } }, [s("i", { staticClass: "fa-solid fa-ban" })]) : t._e(), t.hasSlot("slot-resource-info") ? [s("b-col", { attrs: { cols: "auto" } }, [t._t("slot-resource-info", null, { scope: i })], 2)] : t._e()], 2)], 1)], 1);
+    })];
+  })], 2);
+}, Pt = [], Gt = /* @__PURE__ */ it(
+  Jt,
+  Vt,
+  Pt,
+  !1,
+  null,
+  "590537f2"
+);
+const Kt = Gt.exports, Zt = {
+  name: "ComponentSwitchButton",
+  props: {
+    value: {
+      type: [Boolean, Number],
+      default: !1
+    },
+    size: {
+      type: String,
+      default: "lg"
+      // sm|md|lg
+    },
+    loading: {
+      type: Boolean,
+      default: !1
+    }
+  },
+  computed: {
+    isNumber() {
+      return typeof this.value == "number";
+    },
+    result: {
+      get() {
+        return !!this.value;
+      },
+      set(e) {
+        this.$emit("input", this.isNumber ? e ? 1 : 0 : !!e);
+      }
+    }
+  }
+};
+var Xt = function() {
+  var t = this, s = t._self._c;
+  return s("div", { staticClass: "component-switch-button" }, [s("b-overlay", { staticClass: "d-inline-block w-100", attrs: { show: t.loading, "spinner-small": "", "spinner-variant": "primary" } }, [s("b-form-checkbox", { attrs: { switch: "", size: t.size }, scopedSlots: t._u([{ key: "default", fn: function() {
+    return [t._t("default")];
+  }, proxy: !0 }], null, !0), model: { value: t.result, callback: function(n) {
+    t.result = n;
+  }, expression: "result" } })], 1)], 1);
+}, Qt = [], te = /* @__PURE__ */ it(
+  Zt,
+  Xt,
+  Qt,
+  !1,
+  null,
+  "4b3a47f3"
+);
+const yt = te.exports, Ct = {};
+["items", "options.view", "options.allowEdit", "options.allowContinuous", "options.allowAutoAssign"].forEach((e) => {
+  Ct[e] = function(t) {
+    switch (e) {
+      case "items":
+      case "options.view":
+        break;
+      default:
+        at.cookies.set({
+          key: e.split(".")[1],
+          val: t
+        });
+        break;
+    }
+    this.fixOrderSortError();
+  };
+});
+const ee = {
+  name: "ComponentsCalendar",
+  components: {
+    scheduler: Ut,
+    resourceMenu: Kt,
+    SwitchButton: yt
+  },
+  props: {
+    loading: {
+      type: Boolean,
+      default: !1
+    },
+    today: {
+      type: [Object, Number, String],
+      default() {
+        return Date.now();
+      }
+    },
+    resource: {
+      type: Array,
+      default() {
+        return [
+          // {
+          //   id: 1,
+          //   name: 'RoomType',
+          //   children: [
+          //     {
+          //      id: 10,
+          //       name: 'room',
+          //     }
+          //   ]
+          // }
+        ];
+      }
+    },
+    stock: {
+      type: Object,
+      default() {
+        return {};
+      }
+    },
+    items: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    holiday: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  },
+  data() {
+    return {
+      isMobile: window.innerWidth < 992,
+      defaultData: {
+        // hotkey
+        hotkey: !0,
+        // calendar
+        defaultDate: this.now().format(this.format),
+        defaultView: 7,
+        previewDay: 1,
+        locale: "en",
+        // en|tw
+        views: [3, 7, 15, "month"],
+        format: "YYYY-MM-DD"
+        // // resource
+        // headerTitle: 'Header Title',
+        // waitTitle: 'Wait Title'
+      },
+      selected: {
+        startDate: this.now().format(this.format),
+        count: 7
+      },
+      updateViewEvent: null
+    };
+  },
+  computed: {
+    dict() {
+      return mt[this.lang] || mt.en;
+    },
+    stockData: {
+      get() {
+        return this.stock;
+      },
+      set(e) {
+        this.$emit("update:stock", e);
+      }
+    },
+    itemList: {
+      get() {
+        return this.items;
+      },
+      set(e) {
+        this.$emit("update:items", e);
+      }
+    },
+    resourceData: {
+      get() {
+        return this.resource;
+      },
+      set(e) {
+        this.$emit("update:resource", e);
+      }
+    },
+    optionsData: {
+      get() {
+        return {
+          ...this.defaultData,
+          ...this.options
+        };
+      },
+      set(e) {
+        this.$emit("update:options", e);
+      }
+    },
+    viewCountDefault() {
+      var s, n;
+      const e = this.defaultData.views, t = (n = (s = this.optionsData) == null ? void 0 : s.view) == null ? void 0 : n.count;
+      return typeof t < "u" && e.includes(t) ? t : e[1];
+    },
+    isViewMonth() {
+      return this.selected.count === "month";
+    },
+    currentMonth() {
+      return $(this.selected.startDate).format("MMM");
+    },
+    showWait() {
+      var e;
+      return typeof ((e = this.optionsData) == null ? void 0 : e.showWait) < "u" ? this.optionsData.showWait : !0;
+    },
+    showToolbar() {
+      var e;
+      return typeof ((e = this.optionsData) == null ? void 0 : e.showToolbar) < "u" ? this.optionsData.showToolbar : !0;
+    },
+    marginTop() {
+      var e;
+      return Number((e = this.optionsData) == null ? void 0 : e.marginTop) || 0;
+    },
+    allowChangeDate() {
+      var e;
+      return !!((e = this.optionsData) != null && e.allowChangeDate);
+    },
+    allowChangeType() {
+      var e;
+      return !!((e = this.optionsData) != null && e.allowChangeType);
+    },
+    allowEdit() {
+      var e;
+      return this.showToolbar ? !!((e = this.optionsData) != null && e.allowEdit) : !0;
+    },
+    allowContinuous() {
+      var e;
+      return this.showToolbar ? !!((e = this.optionsData) != null && e.allowContinuous) : !0;
+    },
+    allowAutoAssign() {
+      var e;
+      return this.showToolbar ? !!((e = this.optionsData) != null && e.allowAutoAssign) : !0;
+    },
+    allowHotkey() {
+      var e;
+      return !!((e = this.optionsData) != null && e.hotkey);
+    },
+    headerText() {
+      var e;
+      return (e = this.optionsData) == null ? void 0 : e.headerTitle;
+    },
+    waitText() {
+      var e;
+      return (e = this.optionsData) == null ? void 0 : e.waitTitle;
+    },
+    format() {
+      var e;
+      return (e = this.optionsData) == null ? void 0 : e.format;
+    },
+    views() {
+      var t;
+      return (((t = this.optionsData) == null ? void 0 : t.views) || []).map((s) => ({
+        active: this.selected.count === s,
+        value: s
+      }));
+    },
+    lang() {
+      return at.formatLang(this.locale);
+    },
+    locale() {
+      var e;
+      return ((e = this.optionsData) == null ? void 0 : e.locale) || "en";
+    },
+    previewDay() {
+      var e;
+      return (((e = this.optionsData) == null ? void 0 : e.previewDay) || 0) * -1;
+    },
+    dateRange() {
+      const e = this.selected.startDate, t = this.selected.count || 1, s = this.isViewMonth ? $(this.selected.startDate).startOf("month").format(this.format) : $(e).format(this.format), n = this.isViewMonth ? $(this.selected.startDate).endOf("month").format(this.format) : $(e).add(t - 1, "days").format(this.format);
+      return { start: s, end: n };
+    },
+    // vCaleLocale() {
+    //   let thisLang = this.locale || 'en-US'
+    //   switch (thisLang.toLowerCase()) {
+    //     case 'ja_jp':
+    //     case 'ja-jp':
+    //     case 'jajp':
+    //     case 'ja':
+    //     case 'jp':
+    //       thisLang = 'ja'
+    //       break
+    //     case 'zh_tw':
+    //     case 'zh-tw':
+    //     case 'zhtw':
+    //     case 'tw':
+    //       thisLang = 'zh-TW'
+    //       break
+    //     case 'en_us':
+    //     case 'en-us':
+    //     case 'enus':
+    //     case 'en':
+    //     default:
+    //       thisLang = 'en-US'
+    //       break
+    //   }
+    //   return thisLang
+    // },
+    schedulerRef() {
+      var e;
+      return ((e = this.$refs) == null ? void 0 : e.scheduler) || {};
+    }
+  },
+  watch: {
+    ...Ct,
+    locale() {
+      this.dayJsLocale(this.locale);
+    },
+    selected: {
+      handler() {
+        let { count: e, startDate: t, end: s } = this.selected;
+        this.isViewMonth ? (t = $(t).startOf("month").format(this.format), s = $(t).endOf("month").format(this.format), e = $(s).diff($(t), "days") + 1) : (t = $(t).format(this.format), s = $(t).add(e - 1, "days").format(this.format));
+        const n = {
+          start: t,
+          end: s,
+          count: e
+        };
+        this.optionsData = {
+          ...this.optionsData,
+          view: n
+        }, this.debounceChangeEvent && clearTimeout(this.debounceChangeEvent), this.debounceChangeEvent = setTimeout(() => {
+          this.$emit("change", n), delete this.debounceChangeEvent;
+        }, 100);
+      },
+      immediate: !1,
+      deep: !0
+    },
+    "selected.count": {
+      handler() {
+        at.cookies.set({
+          key: "view-count",
+          val: this.selected.count
+        });
+      },
+      immediate: !1,
+      deep: !0
+    }
+  },
+  async mounted() {
+    this.globeEventbind(), this.getSettingCache(), await this.$nextTick(), this.init(), this._scrollToToday = () => {
+      const e = document.querySelector(".components-calendar-main .components-scheduler"), t = document.querySelector(".components-calendar-main .components-scheduler .dates .today");
+      if (e && t) {
+        const { width: s, x: n } = t.getBoundingClientRect();
+        e.scrollTo(n - s * 3.5, 0);
+      }
+    }, window.scrollToToday = this._scrollToToday;
+  },
+  beforeDestroy() {
+    this._resizeHandler && window.removeEventListener("resize", this._resizeHandler), this._keydownHandler && document.removeEventListener("keydown", this._keydownHandler), clearTimeout(this._fixOrderSortTimeout), clearTimeout(this.debounceChangeEvent), delete window.scrollToToday;
+  },
+  methods: {
+    fixOrderSortError() {
+      clearTimeout(this._fixOrderSortTimeout), this._fixOrderSortTimeout = setTimeout(async () => {
+        await this.$nextTick(), document.querySelectorAll('.components-calendar-main [data-type="wait"]').forEach((e) => {
+          e.querySelectorAll('[data-type="item"]').forEach((t, s) => {
+            [...t.classList].includes("done") || t.classList.remove(...[...Array(100)].map((i, d) => `item-order-${d + 1}`));
+            const n = [`item-order-${s + 1}`, "done"], a = t.getAttribute("data-_uids");
+            document.querySelectorAll(`[data-_uids="${a}"]:not(.done)`).forEach((i) => {
+              i.classList.remove(...[...Array(100)].map((d, o) => `item-order-${o + 1}`)), i.classList.add(...n);
+            });
+          });
+        }), document.querySelectorAll(".done").forEach((e) => e.classList.remove("done")), this._fixOrderSortTimeout = null;
+      }, 10);
+    },
+    hasSlot(e = "default") {
+      return !!this.$slots[e] || !!this.$scopedSlots[e];
+    },
+    deepCopy(e) {
+      return JSON.parse(JSON.stringify(e));
+    },
+    init() {
+      this.selected.count = this.viewCountDefault, this.dayJsLocale(this.locale), Yt({
+        el: [".components-calendar-menu", ".components-calendar-main"],
+        minSize: [200, 20]
+      }), this.viewTodayClickHandler(this.optionsData.defaultDate);
+    },
+    globeEventbind() {
+      this._resizeHandler = () => {
+        this.isMobile = window.innerWidth < 576;
+      }, window.addEventListener("resize", this._resizeHandler), this.allowHotkey && (this._keydownHandler = (e) => {
+        const t = e.which || e.keyCode, s = e.ctrlKey ? e.ctrlKey : t === 17;
+        switch ([e.metaKey || s, t].join()) {
+          case "true,37":
+            e.preventDefault(), this == null || this.viewShiftClickHandler();
+            break;
+          case "true,39":
+            e.preventDefault(), this == null || this.viewShiftClickHandler(!0);
+            break;
+          case "true,38":
+          case "true,40":
+            e.preventDefault(), this == null || this.viewTodayClickHandler();
+            break;
+        }
+      }, document.addEventListener("keydown", this._keydownHandler));
+    },
+    getSettingCache() {
+      var s, n;
+      const e = this.deepCopy(this.optionsData);
+      ["allowEdit", "allowContinuous", "allowAutoAssign"].forEach((a) => {
+        const i = at.cookies.get(a);
+        e[a] = i === "true" || i === "1";
+      });
+      const t = +at.cookies.get("view-count") || +this.optionsData.view || +((n = (s = this.options) == null ? void 0 : s.view) == null ? void 0 : n.count) || 7;
+      this.selected.count = t, this.optionsData = e;
+    },
+    getSize() {
+      return this.isMobile ? "" : "sm";
+    },
+    now(e) {
+      return $(e).isValid() ? $(e) : $();
+    },
+    dayJsLocale(e) {
+      let t = e || "en";
+      switch (t.toLowerCase()) {
+        case "zh_tw":
+        case "zh-tw":
+        case "zhtw":
+        case "tw":
+          t = "zh-tw";
+          break;
+      }
+      $.locale(t);
+    },
+    i18n(e) {
+      return this.dict[e];
+    },
+    viewsClickHandler(e) {
+      e !== this.selected.view && (this.selected.count = e);
+    },
+    viewShiftClickHandler(e) {
+      if (this.isViewMonth) {
+        const t = e ? 1 : -1;
+        this.selected.startDate = $(this.selected.startDate).add(t, "month").startOf("month").format(this.format);
+      } else {
+        const t = this.selected.count, s = (e ? 1 : -1) * t, n = this.dateRange;
+        n.end = $(n.start).add(s, "days").format(this.format), this.selected.startDate = n.end;
+      }
+    },
+    viewTodayClickHandler(e) {
+      const t = this.now(e).add(this.previewDay, "days").format(this.format);
+      this.selected.startDate = t;
+    },
+    //
+    itemClickHandler(e) {
+      this.$emit("click", e);
+    },
+    itemAssignClickHandler(e) {
+      this.$emit("assign", e);
+    },
+    dropHandler(e) {
+      this.$emit("drop", e);
+    }
+  }
+};
+var se = function() {
+  var t = this, s = t._self._c;
+  return s("div", { staticClass: "components-calendar container-fluid" }, [s("b-overlay", { attrs: { "spinner-variant": "primary", show: t.loading } }, [s("div", { staticClass: "header" }, [t._t("slot-toolbar-top"), t.showToolbar ? s("b-form-row", { class: ["calendar-header-toolbar-top", "pb-1", { small: !t.isMobile }] }, [s("b-col", { attrs: { cols: "auto" } }, [s("SwitchButton", { attrs: { size: "md" }, model: { value: t.options.allowEdit, callback: function(n) {
+    t.$set(t.options, "allowEdit", n);
+  }, expression: "options.allowEdit" } }, [t._v(" " + t._s(t.i18n("addnew_onder")) + " ")])], 1), s("b-col", { attrs: { cols: "auto" } }, [s("SwitchButton", { attrs: { size: "md" }, model: { value: t.options.allowContinuous, callback: function(n) {
+    t.$set(t.options, "allowContinuous", n);
+  }, expression: "options.allowContinuous" } }, [t._v(" " + t._s(t.i18n("continuous_display")) + " ")])], 1), s("b-col", { attrs: { cols: "auto" } }, [s("SwitchButton", { attrs: { size: "md" }, model: { value: t.options.allowAutoAssign, callback: function(n) {
+    t.$set(t.options, "allowAutoAssign", n);
+  }, expression: "options.allowAutoAssign" } }, [t._v(" " + t._s(t.i18n("autoassign_room")) + " ")])], 1)], 1) : t._e(), s("b-form-row", [s("b-col", { staticClass: "pb-2", attrs: { cols: "12", md: "auto" } }, [s("b-form-row", [t.isViewMonth ? t._e() : s("b-col", { attrs: { cols: "auto" } }, [s("b-button", { attrs: { size: t.getSize(), variant: "outline-light" }, on: { click: t.viewTodayClickHandler } }, [t._v(" " + t._s(t.i18n("today")) + " ")])], 1), s("b-col", { staticClass: "ml-auto", attrs: { cols: "auto" } }, [s("b-button-group", { staticClass: "w-100" }, [t.isViewMonth ? s("span", { class: ["btn", "btn-outline-light", `btn-${t.getSize()}`] }, [t._v(" " + t._s(t.currentMonth) + " ")]) : s("input", { directives: [{ name: "model", rawName: "v-model", value: t.selected.startDate, expression: "selected.startDate" }], staticClass: "form-control date-picker", attrs: { type: "date" }, domProps: { value: t.selected.startDate }, on: { input: function(n) {
+    n.target.composing || t.$set(t.selected, "startDate", n.target.value);
+  } } }), s("b-button", { staticClass: "mxw-60px", attrs: { size: t.getSize(), variant: "outline-light" }, on: { click: function(n) {
+    return t.viewShiftClickHandler();
+  } } }, [s("i", { staticClass: "fa-solid fa-angle-left" })]), s("b-button", { staticClass: "mxw-60px", attrs: { size: t.getSize(), variant: "outline-light" }, on: { click: function(n) {
+    return t.viewShiftClickHandler(!0);
+  } } }, [s("i", { staticClass: "fa-solid fa-angle-right" })])], 1)], 1)], 1)], 1), s("b-col", { staticClass: "pb-2", attrs: { cols: "auto" } }, [s("b-button-group", t._l(t.views, function(n, a) {
+    return s("b-button", { key: a, class: { active: n.active }, attrs: { size: t.getSize(), variant: "outline-primary" }, on: { click: function(i) {
+      return t.viewsClickHandler(n.value);
+    } } }, [n.value === "month" ? [t._v(" " + t._s(t.i18n(n.value)) + " ")] : [t._v(" " + t._s(n.value) + t._s(t.i18n("day")) + " ")]], 2);
+  }), 1)], 1), s("b-col", { staticClass: "right-middle pb-2" }, [t._t("slot-toolbar-right")], 2)], 1)], 2), s("b-row", { staticClass: "main" }, [s("div", { staticClass: "components-calendar-menu" }, [s("resource-menu", { attrs: { "header-title": t.headerText, "show-wait": t.showWait, "wait-title": t.waitText, data: t.resourceData }, on: { "update:data": function(n) {
+    t.resourceData = n;
+  } }, scopedSlots: t._u([t.hasSlot("slot-resource-info") ? { key: "slot-resource-info", fn: function({ scope: n }) {
+    return [t._t("slot-resource-info", null, { scope: n })];
+  } } : null], null, !0) })], 1), s("div", { staticClass: "components-calendar-main" }, [s("scheduler", { ref: "scheduler", attrs: { today: t.today, "show-wait": t.showWait, "margin-top": t.marginTop, locale: t.locale, range: t.dateRange, holiday: t.holiday, resource: t.resourceData, stock: t.stockData, items: t.itemList, "allow-change-date": t.allowChangeDate, "allow-change-type": t.allowChangeType, "allow-edit": t.allowEdit, "allow-continuous": t.allowContinuous, "allow-auto-assign": t.allowAutoAssign }, on: { "update:resource": function(n) {
+    t.resourceData = n;
+  }, "update:stock": function(n) {
+    t.stockData = n;
+  }, "update:items": function(n) {
+    t.itemList = n;
+  }, click: t.itemClickHandler, assign: t.itemAssignClickHandler, drop: t.dropHandler }, scopedSlots: t._u([t.hasSlot("slot-item-info") ? { key: "slot-item-info", fn: function({ scope: n }) {
+    return [t._t("slot-item-info", null, { scope: n })];
+  } } : { key: "slot-item-info", fn: function({ scope: n }) {
+    return [s("div", [n.payment_status ? s("span", { class: [
+      "pay_status_icon",
+      n.payment_status,
+      {
+        black: !n.assign
+      }
+    ] }) : t._e(), n.title ? s("span", [t._v(" " + t._s(n.title) + " "), n.nan ? [s("sup", [t._v(t._s(t.i18n("note")) + t._s(n.nan))])] : t._e()], 2) : s("span", [t._v(t._s(n.start))]), s("br"), s("span", [t._v(t._s(n.source)), n.order_from ? s("span", [t._v(" (" + t._s(n.order_from) + ")")]) : t._e()])])];
+  } }, t.hasSlot("slot-item-stock") ? { key: "slot-item-stock", fn: function({ scope: n }) {
+    return [t._t("slot-item-stock", null, { scope: n })];
+  } } : null], null, !0) })], 1)])], 1)], 1);
+}, ne = [], ae = /* @__PURE__ */ it(
+  ee,
+  se,
+  ne,
+  !1,
+  null,
+  "f5be2f1a"
+);
+const bt = ae.exports, re = {
+  name: "ComponentsContextMenu",
+  props: {
+    visible: {
+      type: Boolean,
+      default: !1
+    },
+    loading: {
+      type: Boolean,
+      default: !1
+    },
+    options: {
+      type: Object,
+      default() {
+        return {
+          // width: '200px',
+          // top: '100px',
+          // left: '100px'
+        };
+      }
+    }
+  },
+  data() {
+    return {
+      key: `id_${Date.now()}`
+    };
+  },
+  computed: {
+    visibleValue: {
+      get() {
+        return this.visible;
+      },
+      set(e) {
+        this.$emit("update:visible", e);
+      }
+    }
+  },
+  watch: {
+    options: {
+      handler() {
+        const e = this.options || {}, t = document.querySelector(`#${this.key}`);
+        t && setTimeout(() => {
+          Object.entries(e).forEach(([s, n]) => {
+            let a = n;
+            switch (s) {
+              case "top":
+                a = `${n - t.clientHeight - 8}px`;
+                break;
+              case "left":
+                a = `${n - 25}px`;
+                break;
+            }
+            t.style[s] = a;
+          });
+        });
+      },
+      deep: !0,
+      immediate: !1
+    }
+  },
+  methods: {}
+};
+var ie = function() {
+  var t = this, s = t._self._c;
+  return s("div", { directives: [{ name: "show", rawName: "v-show", value: t.visibleValue, expression: "visibleValue" }], staticClass: "components-context-menu", attrs: { id: t.key } }, [s("b-overlay", { attrs: { "spinner-variant": "primary", show: t.loading } }, [s("div", { staticClass: "components-context-menu-content" }, [s("button", { staticClass: "close", on: { click: function(n) {
+    t.visibleValue = !1;
+  } } }, [t._v(" × ")]), t._t("default")], 2)])], 1);
+}, oe = [], le = /* @__PURE__ */ it(
+  re,
+  ie,
+  oe,
+  !1,
+  null,
+  "7852adfd"
+);
+const St = le.exports, ce = {
+  install: function(e) {
+    e.component("calendar", bt), e.component("context-menu", St), e.component("switch-button", yt);
+  },
+  calendar: bt,
+  contextMenu: St,
+  switchButton: yt
+}, de = null, ue = null;
+var he = /* @__PURE__ */ it(
+  ce,
+  de,
+  ue,
+  !1,
+  null,
+  null
+);
+const fe = he.exports;
+export {
+  fe as default
+};
+//# sourceMappingURL=calendar.es.js.map
