@@ -756,7 +756,7 @@ var jt = function() {
   Rt,
   !1,
   null,
-  "e8914dbe"
+  "aa107caf"
 );
 const Bt = It.exports, Nt = {
   name: "ComponentsScheduler",
@@ -1003,6 +1003,16 @@ const Bt = It.exports, Nt = {
       },
       immediate: !1,
       deep: !0
+    },
+    allowContinuous: {
+      handler() {
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.updateRowspan();
+          }, 50);
+        });
+      },
+      immediate: !1
     },
     range: {
       handler() {
@@ -1428,7 +1438,7 @@ var Wt = function() {
   Ft,
   !1,
   null,
-  "9d503ac0"
+  "a21ef0b3"
 );
 const Ut = qt.exports, Jt = {
   name: "ComponentsResource",
